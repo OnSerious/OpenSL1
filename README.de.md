@@ -165,8 +165,9 @@ Nein. Serato DJ hat die SL1 nie unterstützt, und OpenSL1 wird die SL1 nie als a
 <details>
 <summary><b>Geht sie auch mit anderen Programmen?</b></summary>
 
-Die SL1 ist ein normales CoreAudio-Gerät, andere Programme sollten sie also als Soundkarte sehen. Timecode-Steuerung
-ist nur mit Mixxx getestet.
+Die SL1 ist ein normales CoreAudio-Gerät, andere Programme können sie also als Soundkarte nutzen. **VirtualDJ** (macOS)
+öffnet sie, spielt auf Line 1/2 und übersteht Änderungen der Audio-Einstellungen; die Timecode-Steuerung (DVS) braucht
+dort eine kostenpflichtige VirtualDJ-Lizenz und ist noch ungetestet. Timecode-Steuerung ist mit Mixxx getestet.
 </details>
 
 <details>

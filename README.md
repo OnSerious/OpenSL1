@@ -165,8 +165,9 @@ No. Serato DJ never supported the SL1, and OpenSL1 will never pretend the SL1 is
 <details>
 <summary><b>Can I use it with other apps?</b></summary>
 
-The SL1 is a normal CoreAudio device, so other apps should see it as a sound card. Timecode control has only been
-tested with Mixxx.
+The SL1 is a normal CoreAudio device, so other apps can use it as a sound card. **VirtualDJ** (macOS) opens it,
+plays to Line 1/2 and survives changing its audio settings; its timecode (DVS) feature needs a paid VirtualDJ licence
+and has not been tested yet. Timecode control is tested with Mixxx.
 </details>
 
 <details>
