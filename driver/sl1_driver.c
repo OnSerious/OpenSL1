@@ -57,6 +57,42 @@ static os_log_t opensl1_log(void)
     return log;
 }
 
+/*
+ * While the SL1 hangs, the watchdog retries every few hundred ms and would log
+ * the same failure several times a second. A gate lets a message through once
+ * per LOG_GATE_NS and counts the repeats in between. Callers hold g.lock.
+ */
+#define LOG_GATE_NS (10ull * NSEC_PER_SEC)
+
+typedef struct {
+    char last[256];
+    uint64_t last_ns;
+    unsigned suppressed;
+} log_gate;
+
+static void gate_flush(log_gate *gt)
+{
+    if (gt->suppressed)
+        LOG("%u repeated messages suppressed", gt->suppressed);
+    gt->suppressed = 0;
+    gt->last[0] = 0;
+}
+
+static int gate_pass(log_gate *gt, const char *text)
+{
+    uint64_t now = clock_gettime_nsec_np(CLOCK_MONOTONIC);
+    if (gt->last[0] && strcmp(text, gt->last) == 0 && now - gt->last_ns < LOG_GATE_NS) {
+        gt->suppressed++;
+        return 0;
+    }
+    gate_flush(gt);
+    snprintf(gt->last, sizeof(gt->last), "%s", text);
+    gt->last_ns = now;
+    return 1;
+}
+
+static log_gate gate_open, gate_start, gate_watchdog;
+
 enum {
     OBJ_PLUGIN = kAudioObjectPlugInObject,
     OBJ_DEVICE = 2,
@@ -182,6 +218,8 @@ static struct {
     double resume_sample, resume_host, resume_per_tick;
     /* Test hook (hal_harness only): OPENSL1_TEST_STALL=<n> ignores Input 1 for 500 packets from packet n. */
     uint64_t test_stall_at;
+    /* Test hook (hal_harness only): OPENSL1_TEST_OPEN_FAIL=<n> makes the first n opens fail. */
+    unsigned test_open_fail;
     int power_token;
 } g = { .lock = PTHREAD_MUTEX_INITIALIZER, .stream_active = { 1, 1 }, .seed = 1 };
 
@@ -471,9 +509,9 @@ static void log_stats_locked(int periodic)
     LOG("headroom: input min %lld frames (%llu late reads, last at %.2f s), output min %lld frames "
         "(%llu late writes, last at %.2f s)",
         (long long)atomic_load(&g.in_margin_min), atomic_load(&g.in_late),
-        (double)(atomic_load(&g.in_late_last) - g.io_start_sample) / SL1_RATE,
+        atomic_load(&g.in_late) ? (double)(atomic_load(&g.in_late_last) - g.io_start_sample) / SL1_RATE : 0.0,
         (long long)atomic_load(&g.out_margin_min), atomic_load(&g.out_late),
-        (double)(atomic_load(&g.out_late_last) - g.io_start_sample) / SL1_RATE);
+        atomic_load(&g.out_late) ? (double)(atomic_load(&g.out_late_last) - g.io_start_sample) / SL1_RATE : 0.0);
 }
 
 static void usb_close_locked(void)
@@ -634,8 +672,14 @@ static OSStatus usb_start_locked(int restart)
     for (int attempt = 0; attempt < 3 && !opened; attempt++) {
         if (attempt)
             usleep(100000);
-        opened = sl1_open(&g.usb, &cfg, err, sizeof(err)) == 0;
-        if (!opened)
+        if (g.test_open_fail) {
+            g.test_open_fail--;
+            snprintf(err, sizeof(err), "test: simulated open failure");
+            opened = 0;
+        } else {
+            opened = sl1_open(&g.usb, &cfg, err, sizeof(err)) == 0;
+        }
+        if (!opened && gate_pass(&gate_open, err))
             LOG_STR("open failed", err);
     }
     if (!opened) {
@@ -670,7 +714,8 @@ static OSStatus usb_start_locked(int restart)
     unsigned mask = SL1_STREAM_BIT(SL1_STREAM_A_IN) | SL1_STREAM_BIT(SL1_STREAM_B_IN) |
                     SL1_STREAM_BIT(SL1_STREAM_A_OUT) | SL1_STREAM_BIT(SL1_STREAM_B_OUT);
     if (sl1_start(g.usb, mask, err, sizeof(err))) {
-        LOG_STR("start failed", err);
+        if (gate_pass(&gate_start, err))
+            LOG_STR("start failed", err);
         usb_close_locked();
         return kAudioHardwareNotRunningError;
     }
@@ -678,7 +723,8 @@ static OSStatus usb_start_locked(int restart)
     for (int i = 0; i < 200 && atomic_load(&g.in_packets) == packets_before; i++)
         usleep(2000);
     if (atomic_load(&g.in_packets) == packets_before) {
-        LOG("no data from Input 1");
+        if (gate_pass(&gate_start, "no data from Input 1"))
+            LOG("no data from Input 1");
         usb_close_locked();
         return kAudioHardwareNotRunningError;
     }
@@ -688,6 +734,9 @@ static OSStatus usb_start_locked(int restart)
     if (g.free_running)
         reset_headroom_locked((int64_t)atomic_load(&g.in_written));
     g.free_running = 0;
+    gate_flush(&gate_open);
+    gate_flush(&gate_start);
+    gate_flush(&gate_watchdog);
     if (restart)
         LOG("IO restarted");
     else
@@ -736,7 +785,8 @@ static void watchdog_tick(void)
         g.wd_stall = 0;
     } else if (++g.wd_stall >= WATCHDOG_STALL_TICKS) {
         g.restarts++;
-        LOG("no USB data for %d ms, restarting (restart %u)", g.wd_stall * WATCHDOG_MS, g.restarts);
+        if (gate_pass(&gate_watchdog, "no USB data"))
+            LOG("no USB data for %d ms, restarting (restart %u)", g.wd_stall * WATCHDOG_MS, g.restarts);
         usb_close_locked();
         usb_start_locked(1);
         g.wd_last = atomic_load(&g.in_packets);
@@ -806,6 +856,9 @@ static OSStatus drv_Initialize(AudioServerPlugInDriverRef d, AudioServerPlugInHo
     const char *stall = getenv("OPENSL1_TEST_STALL");
     if (stall)
         g.test_stall_at = strtoull(stall, NULL, 10);
+    const char *open_fail = getenv("OPENSL1_TEST_OPEN_FAIL");
+    if (open_fail)
+        g.test_open_fail = (unsigned)strtoul(open_fail, NULL, 10);
     watch_device();
     watch_power();
     start_watchdog();

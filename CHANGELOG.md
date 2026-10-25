@@ -10,6 +10,15 @@ All notable changes to OpenSL1. Format inspired by [Keep a Changelog](https://ke
 
 ---
 
+## 🛠️ Unreleased
+
+- **Quieter log while the SL1 hangs:** a repeated failure (open, start, watchdog restart) is logged at most once
+  every 10 s; when the SL1 is back, the driver reports how many repeats it suppressed.
+- Headroom lines show “last at 0.00 s” when there was no late access (a negative time could appear before).
+- Test hook `OPENSL1_TEST_OPEN_FAIL=<n>` for `hal_harness`: the first n opens fail.
+
+---
+
 ## 🚀 [0.1.1](https://github.com/OnSerious/OpenSL1/releases/tag/v0.1.1) – 2026-10-25
 
 **Mixxx never loses the SL1 any more.**
