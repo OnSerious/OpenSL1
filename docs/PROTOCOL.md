@@ -106,6 +106,8 @@ graph TD
 - [ ] Microphone: packets of 42–72 frames were seen (expected 44/45 for mono 44.1 kHz); the format needs a closer
       look. Gain is analog only (“Mic Gain” knob).
 - [ ] Behaviour without the 9 V supply under long use.
-- [ ] **Start-up burst:** right after a stream starts, all four input channels carry the same impulsive noise for a
-      few seconds (RMS ≈ −52 dBFS, peaks −26.5 dBFS, L/R correlation 1.0), then the inputs settle to about −88 dBFS.
-      Seen on macOS. Cause unknown – wait a few seconds before dropping the needle.
+- [x] ~~Start-up burst~~ – **explained** (raw capture, nothing but USB connected): right after the SL1 starts
+      streaming, all four inputs carry the same slow DC offset swing – up to −28 dBFS after 0.1 s, then an exponential
+      decay to the −88 dBFS noise floor within about 1.5 s. No 50 Hz, no 1 kHz/USB-frame structure: it is the analog
+      input stage settling (likely coupling capacitors), not interference. Harmless for 1 kHz timecode; give it a
+      second before dropping the needle.

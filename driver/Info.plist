@@ -2,6 +2,11 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>AudioServerPlugIn_IOKitUserClients</key>
+	<array>
+		<string>AppleUSBHostFrameworkDeviceClient</string>
+		<string>AppleUSBHostFrameworkInterfaceClient</string>
+	</array>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleExecutable</key>
@@ -15,13 +20,9 @@
 	<key>CFBundlePackageType</key>
 	<string>BNDL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>0.1.0</string>
+	<string>0.1.1</string>
 	<key>CFBundleVersion</key>
-	<string>1</string>
-	<key>LSMinimumSystemVersion</key>
-	<string>12.0</string>
-	<key>NSHumanReadableCopyright</key>
-	<string>OpenSL1, GPL-3.0-or-later. Not affiliated with Rane, Serato or inMusic.</string>
+	<string>2</string>
 	<key>CFPlugInFactories</key>
 	<dict>
 		<key>BF268170-6DF1-4E1E-B150-4F51195A2575</key>
@@ -34,11 +35,9 @@
 			<string>BF268170-6DF1-4E1E-B150-4F51195A2575</string>
 		</array>
 	</dict>
-	<!-- coreaudiod sandbox: allow the IOUSBHost user clients we open -->
-	<key>AudioServerPlugIn_IOKitUserClients</key>
-	<array>
-		<string>AppleUSBHostFrameworkDeviceClient</string>
-		<string>AppleUSBHostFrameworkInterfaceClient</string>
-	</array>
+	<key>LSMinimumSystemVersion</key>
+	<string>12.0</string>
+	<key>NSHumanReadableCopyright</key>
+	<string>OpenSL1, GPL-3.0-or-later. Not affiliated with Rane, Serato or inMusic.</string>
 </dict>
 </plist>

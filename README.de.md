@@ -65,6 +65,7 @@ Timecode-Vinyl liest.
 | 🎧 **Anstecken & loslegen** | „Rane SL1“ mit 4 Eingängen (Input 1/2) und 4 Ausgängen (Line 1/2) bei 44,1 kHz |
 | 💿 **Timecode auf beiden Decks** | Serato-CV02-Vinyl in Mixxx, getestet mit echten Plattenspielern und DJ-Mixer |
 | 🔌 **Gebaut für Missgeschicke** | Kabel mitten im Set rausgerutscht? Wieder einstecken – in *irgendeinen* Port – die Musik kommt von selbst zurück |
+| 🧷 **Einstellungen bleiben** | „Rane SL1“ bleibt auch ohne angesteckte Box verfügbar – erst Mixxx starten, später einstecken |
 | 😴 **Ruhezustand-fest** | Deckel zu, Deckel auf – 45 ms nach dem Aufwachen ist der Ton wieder da |
 | ⚡ **Schnelle Hardware-Strecke** | 2,9 ms durch USB und Wandler |
 | 🩺 **Diagnose für Auftritte** | Pegel, Lücken, USB-Fehler und Strom-Ereignisse im macOS-Log – du siehst, was im Set passiert ist |
@@ -98,7 +99,7 @@ macOS als CoreAudio-Gerät bereit. Der Takt kommt von der SL1 selbst – nichts 
 
 ## 📦 Installation
 
-1. **`OpenSL1-0.1.0.pkg`** vom [aktuellen Release](https://github.com/OnSerious/OpenSL1/releases/latest) laden.
+1. **`OpenSL1-0.1.1.pkg`** vom [aktuellen Release](https://github.com/OnSerious/OpenSL1/releases/latest) laden.
 2. Doppelklicken und dem Installer folgen.
 3. SL1 anstecken – fertig. Sie erscheint als **„Rane SL1“** im *Audio-MIDI-Setup* und in Mixxx.
 
@@ -109,7 +110,7 @@ macOS als CoreAudio-Gerät bereit. Der Takt kommt von der SL1 selbst – nichts 
 <details>
 <summary><b>🗑️ Deinstallieren</b></summary>
 
-**`OpenSL1-Uninstall-0.1.0.pkg`** aus demselben Release öffnen. Das war's.
+**`OpenSL1-Uninstall-0.1.1.pkg`** aus demselben Release öffnen. Das war's.
 </details>
 
 ## Mixxx einrichten
@@ -134,10 +135,9 @@ macOS als CoreAudio-Gerät bereit. Der Takt kommt von der SL1 selbst – nichts 
 
 ## 🎤 Checkliste für Auftritte
 
-- [ ] SL1 **vor** dem Start von Mixxx anstecken
 - [ ] Ladekabel des Macs **vor** dem Set einstecken – und während des Sets nicht anfassen
 - [ ] Main und Kopfhörer auf **Keine**, Puffer 5,8 ms, 44,1 kHz
-- [ ] Nach dem Start von Mixxx ein paar Sekunden warten, bevor die Nadel aufsetzt
+- [ ] Nach dem Einstecken oder dem Start von Mixxx der SL1 ein, zwei Sekunden geben, bevor die Nadel aufsetzt
 - [ ] Soundeinstellungen nicht während des Sets ändern
 - [ ] Kabel rausgerutscht? **Mixxx laufen lassen** und die SL1 wieder einstecken – jeder Port geht
 
@@ -214,9 +214,10 @@ weiterlaufen. Am besten: Ladekabel vor dem Set einstecken. Details in
 </details>
 
 <details>
-<summary><b>Mixxx wurde ohne SL1 gestartet und findet sie nicht</b></summary>
+<summary><b>Ich habe Mixxx gestartet, bevor die SL1 steckte</b></summary>
 
-SL1 anstecken, dann in Mixxx *Einstellungen → Soundhardware* öffnen und **Anwenden** klicken (oder Mixxx neu starten).
+Seit 0.1.1 kein Problem: „Rane SL1“ bleibt auch ohne angesteckte Box verfügbar, Mixxx behält seine Einstellungen und
+startet normal (still). SL1 einstecken – der Ton kommt innerhalb einer Sekunde, ohne Klick.
 </details>
 
 <details>
@@ -242,8 +243,8 @@ Der Treiber schreibt alle 30 Sekunden einen kurzen Bericht. Im Terminal:
 - [x] CoreAudio-Treiber mit Timecode auf beiden Decks
 - [x] Übersteht Abziehen, Ruhezustand und USB-Aussetzer
 - [x] Installer und Uninstaller
-- [ ] „Rane SL1“ auch ohne angesteckte SL1 sichtbar lassen, damit Mixxx seine Einstellungen nie verliert
-- [ ] Gemessene Latenz an Programme melden
+- [x] „Rane SL1“ auch ohne angesteckte SL1 sichtbar lassen, damit Mixxx seine Einstellungen nie verliert
+- [x] Gemessene Latenz an Programme melden
 - [ ] Notariell beglaubigter Installer
 - [ ] Mikrofon-Eingang
 

@@ -49,11 +49,14 @@ graph LR
 <details>
 <summary><b>🔌 Hot-plug</b></summary>
 
-IOKit matching notifications publish the device when the SL1 appears. When it is unplugged while an app runs IO
-(Mixxx keeps its audio running all the time), the device **stays published**: the clock keeps running, inputs read
-silence, and the watchdog reopens the SL1 when it is plugged in again – no need to restart Mixxx. When nothing uses
-it, an unplugged SL1 disappears from CoreAudio until it is back. The USB interfaces are only opened while IO is
-running, so the tools can use the SL1 when no app does.
+Since 0.1.1 the device is **always published**, also without an SL1 – an app that starts while the box is
+missing keeps its device setup. Without the SL1 (or if it cannot be opened) the driver runs IO on a free-running
+clock at the nominal 44.1 kHz: inputs read silence, outputs go nowhere. IOKit matching notifications tell the
+watchdog when the SL1 appears; it opens it and continues on the same timeline (measured: sound 0.24–0.34 s after
+plug-in, 0 timestamp errors). An unplug during IO works the same way in reverse. The USB interfaces are only opened
+while IO is running, so the tools can use the SL1 when no app does.
+
+Trade-off: “Rane SL1” is listed in every app and in Audio MIDI Setup even when nothing is plugged in.
 </details>
 
 <details>
@@ -98,7 +101,7 @@ Both directions use rings indexed by device sample time.
 | Hardware loop (USB + converters) | 128 frames (2.9 ms) | measured with `ca_loop`, identical in every run |
 
 The driver logs its headroom on every stop – check it after changing the scheduling constants. The hardware loop is
-not yet reported to apps (`kAudioDevicePropertyLatency` is 0).
+reported to apps as `kAudioDevicePropertyLatency`: 64 frames input + 64 frames output (the split is unknown).
 </details>
 
 > [!NOTE]
@@ -151,7 +154,6 @@ unconfirmed.
 - [ ] Plug the charger in before the set and do not touch it during the set
 - [ ] Prefer a direct USB-C to USB-B cable over a USB-A to USB-C adapter (one contact less – untested)
 - [ ] A powered USB hub between the Mac and the SL1 may isolate it from the port's power changes (untested)
-- [ ] Connect the SL1 before starting the app – an app started without it may forget its device setup
 
 ## Known issue: libusb causes a kernel panic
 

@@ -79,6 +79,13 @@ enum {
 #define USB_TRANSFERS_IN 12
 #define USB_TRANSFERS_OUT 6
 #define SAFETY_IN 397  /* 9 ms: with 6 ms coreaudiod left only 4 frames of headroom (Mixxx, 2026-10-25) */
+/*
+ * Hardware loop Line 1 -> Input 1 (USB, converters, input stage) measured with
+ * tests/ca_loop: 128 frames, identical in every run. How it splits between
+ * input and output is unknown; reported as half each.
+ */
+#define LATENCY_IN 64
+#define LATENCY_OUT 64
 #define SAFETY_OUT 529 /* 12 ms: with 16 ms the real HAL left 390 frames (8.8 ms) unused (Mixxx, 2026-10-25) */
 
 /* Watchdog: restart USB if Input 1 delivers nothing for this long while IO runs. */
@@ -108,7 +115,7 @@ static struct {
     io_iterator_t added_iter, removed_iter;
 
     int attached; /* the SL1 is plugged in */
-    int present;  /* the device is published: attached, or kept while IO runs */
+    int present;  /* the device is published (always, see drv_Initialize) */
     uint32_t location;
     UInt32 io_clients;
     sl1_device *usb;
@@ -171,6 +178,7 @@ static struct {
     unsigned restarts;
     /* Set for a watchdog restart: continue the old timeline instead of starting at 0. */
     int resume;
+    int free_running; /* IO runs on the nominal clock, without the SL1 */
     double resume_sample, resume_host, resume_per_tick;
     /* Test hook (hal_harness only): OPENSL1_TEST_STALL=<n> ignores Input 1 for 500 packets from packet n. */
     uint64_t test_stall_at;
@@ -487,53 +495,41 @@ static void on_added(void *ref, io_iterator_t it)
         pthread_mutex_lock(&g.lock);
         if (v && CFGetTypeID(v) == CFNumberGetTypeID())
             CFNumberGetValue(v, kCFNumberSInt32Type, &g.location);
+        changed = !g.attached;
         g.attached = 1;
-        changed = !g.present;
-        g.present = 1;
-        /* If IO kept the device through an unplug, the watchdog reopens it now. */
+        /* If IO is running without the SL1, the watchdog opens it now. */
         pthread_mutex_unlock(&g.lock);
         if (v)
             CFRelease(v);
         IOObjectRelease(s);
     }
-    if (changed) {
+    if (changed)
         LOG("SL1 attached (location 0x%08x)", g.location);
-        notify_changed(OBJ_PLUGIN, kAudioPlugInPropertyDeviceList);
-        notify_changed(OBJ_PLUGIN, kAudioObjectPropertyOwnedObjects);
-    }
 }
 
 /*
- * While an app runs IO the device stays published through an unplug: the
- * clock keeps running, inputs read silence, and the watchdog resumes USB when
- * the SL1 is back. Mixxx keeps its audio running instead of losing the device.
+ * The device stays published through an unplug: while IO runs the clock keeps
+ * going, inputs read silence, and the watchdog resumes USB when the SL1 is
+ * back. Mixxx keeps its audio running instead of losing the device.
  */
 static void on_removed(void *ref, io_iterator_t it)
 {
     (void)ref;
     io_service_t s;
-    int changed = 0, kept = 0;
+    int removed = 0, io = 0;
     while ((s = IOIteratorNext(it))) {
         IOObjectRelease(s);
         pthread_mutex_lock(&g.lock);
+        removed |= g.attached;
         g.attached = 0;
         usb_close_locked();
-        if (g.io_clients > 0) {
-            kept = g.present;
-        } else {
-            changed = g.present;
-            g.present = 0;
-        }
+        io = g.io_clients > 0;
         pthread_mutex_unlock(&g.lock);
     }
-    if (kept)
-        LOG("SL1 removed while IO runs: keeping the device until it is back or IO stops");
-    if (changed) {
+    if (removed && io)
+        LOG("SL1 removed while IO runs: inputs read silence until it is back");
+    else if (removed)
         LOG("SL1 removed");
-        notify_changed(OBJ_DEVICE, kAudioDevicePropertyDeviceIsAlive);
-        notify_changed(OBJ_PLUGIN, kAudioPlugInPropertyDeviceList);
-        notify_changed(OBJ_PLUGIN, kAudioObjectPropertyOwnedObjects);
-    }
 }
 
 static CFMutableDictionaryRef sl1_matching(void)
@@ -591,10 +587,10 @@ static void log_power(const char *why)
         CFRelease(adapter);
     }
     pthread_mutex_lock(&g.lock);
-    int present = g.present, attached = g.attached, io = g.io_clients > 0;
+    int attached = g.attached, io = g.io_clients > 0;
     pthread_mutex_unlock(&g.lock);
     os_log(opensl1_log(), "OpenSL1: power %{public}s: %{public}s, adapter %d W (SL1 %{public}s, IO %{public}s)",
-           why, source, watts, attached ? "attached" : present ? "kept" : "absent", io ? "running" : "stopped");
+           why, source, watts, attached ? "attached" : "absent", io ? "running" : "stopped");
     fprintf(stderr, "OpenSL1: power %s: %s, adapter %d W\n", why, source, watts);
 }
 
@@ -608,6 +604,18 @@ static void watch_power(void)
 }
 
 /* ---- IO ------------------------------------------------------------------ */
+
+/* Headroom statistics start at sample `from` (0 for a fresh start). */
+static void reset_headroom_locked(int64_t from)
+{
+    atomic_store(&g.in_margin_min, INT64_MAX);
+    atomic_store(&g.out_margin_min, INT64_MAX);
+    atomic_store(&g.in_late, 0);
+    atomic_store(&g.out_late, 0);
+    atomic_store(&g.in_late_last, 0);
+    atomic_store(&g.out_late_last, 0);
+    g.io_start_sample = from;
+}
 
 /*
  * Opens the SL1 and starts all four streams. restart = 1 is the watchdog
@@ -654,15 +662,8 @@ static OSStatus usb_start_locked(int restart)
     mach_timebase_info(&tb);
     g.ticks_per_frame = 1e6 * tb.denom / tb.numer; /* 1 ms in host ticks */
     uint64_t packets_before = atomic_load(&g.in_packets);
-    if (!restart) {
-        atomic_store(&g.in_margin_min, INT64_MAX);
-        atomic_store(&g.out_margin_min, INT64_MAX);
-        atomic_store(&g.in_late, 0);
-        atomic_store(&g.out_late, 0);
-        atomic_store(&g.in_late_last, 0);
-        atomic_store(&g.out_late_last, 0);
-        g.io_start_sample = 0;
-    }
+    if (!restart)
+        reset_headroom_locked(0);
 
     sl1_callbacks cb = { on_in, on_out, NULL };
     sl1_set_callbacks(g.usb, &cb);
@@ -683,11 +684,35 @@ static OSStatus usb_start_locked(int restart)
     }
     if (!restart)
         g.seed++;
+    /* Taking over from the free-running clock: count headroom from the first SL1 data on. */
+    if (g.free_running)
+        reset_headroom_locked((int64_t)atomic_load(&g.in_written));
+    g.free_running = 0;
     if (restart)
         LOG("IO restarted");
     else
         LOG("IO started");
     return noErr;
+}
+
+/*
+ * IO without the SL1 (not plugged in, or it fails to open): run the clock at
+ * the nominal rate from host time so the app can start and keep its setup.
+ * Inputs read silence, outputs go nowhere; the watchdog switches to the SL1
+ * on the same timeline once it opens.
+ */
+static void start_free_clock_locked(void)
+{
+    mach_timebase_info_data_t tb;
+    mach_timebase_info(&tb);
+    g.ticks_per_frame = 1e6 * tb.denom / tb.numer;
+    memset(g.in_ring, 0, sizeof(g.in_ring));
+    memset(g.out_ring, 0, sizeof(g.out_ring));
+    clock_publish(0, (double)mach_absolute_time(), SL1_RATE / 1000.0 / g.ticks_per_frame);
+    atomic_store(&g.clock_valid, 1);
+    g.free_running = 1;
+    g.seed++;
+    LOG("IO started without the SL1: silence until it is available");
 }
 
 /*
@@ -772,6 +797,12 @@ static OSStatus drv_Initialize(AudioServerPlugInDriverRef d, AudioServerPlugInHo
 {
     (void)d;
     g.host = host;
+    /*
+     * Always published, also without the SL1: an app that starts while the
+     * SL1 is missing (or hangs after a power glitch) keeps its device setup
+     * and gets sound as soon as the SL1 is back.
+     */
+    g.present = 1;
     const char *stall = getenv("OPENSL1_TEST_STALL");
     if (stall)
         g.test_stall_at = strtoull(stall, NULL, 10);
@@ -976,7 +1007,8 @@ static OSStatus get_prop(AudioObjectID obj, const AudioObjectPropertyAddress *a,
         /* Never the system default: alerts and other apps' sound must not end up on the PA. */
         case kAudioDevicePropertyDeviceCanBeDefaultDevice: PUT(UInt32, 0);
         case kAudioDevicePropertyDeviceCanBeDefaultSystemDevice: PUT(UInt32, 0);
-        case kAudioDevicePropertyLatency: PUT(UInt32, 0);
+        case kAudioDevicePropertyLatency:
+            PUT(UInt32, scope == kAudioObjectPropertyScopeInput ? LATENCY_IN : LATENCY_OUT);
         case kAudioDevicePropertySafetyOffset:
             PUT(UInt32, scope == kAudioObjectPropertyScopeInput ? SAFETY_IN : SAFETY_OUT);
         case kAudioDevicePropertyNominalSampleRate: PUT(Float64, SL1_RATE);
@@ -1191,14 +1223,11 @@ static OSStatus drv_StartIO(AudioServerPlugInDriverRef d, AudioObjectID dev, UIn
     OSStatus r = noErr;
     pthread_mutex_lock(&g.lock);
     if (g.io_clients == 0) {
-        if (!g.attached) {
-            r = kAudioHardwareNotRunningError;
-        } else {
-            atomic_store(&g.clock_valid, 0);
-            r = usb_start_locked(0);
-            g.wd_last = atomic_load(&g.in_packets);
-            g.wd_stall = 0;
-        }
+        atomic_store(&g.clock_valid, 0);
+        if (!g.attached || usb_start_locked(0) != noErr)
+            start_free_clock_locked();
+        g.wd_last = atomic_load(&g.in_packets);
+        g.wd_stall = 0;
     }
     if (r == noErr)
         g.io_clients++;
@@ -1211,25 +1240,13 @@ static OSStatus drv_StopIO(AudioServerPlugInDriverRef d, AudioObjectID dev, UInt
     (void)d, (void)client;
     if (dev != OBJ_DEVICE)
         return kAudioHardwareBadObjectError;
-    int hide = 0;
     pthread_mutex_lock(&g.lock);
     if (g.io_clients > 0 && --g.io_clients == 0) {
         usb_close_locked();
         atomic_store(&g.clock_valid, 0);
         LOG("IO stopped");
-        /* Kept through an unplug only for the running IO: hide it now. */
-        if (!g.attached && g.present) {
-            g.present = 0;
-            hide = 1;
-        }
     }
     pthread_mutex_unlock(&g.lock);
-    if (hide) {
-        LOG("SL1 removed");
-        notify_changed(OBJ_DEVICE, kAudioDevicePropertyDeviceIsAlive);
-        notify_changed(OBJ_PLUGIN, kAudioPlugInPropertyDeviceList);
-        notify_changed(OBJ_PLUGIN, kAudioObjectPropertyOwnedObjects);
-    }
     return noErr;
 }
 

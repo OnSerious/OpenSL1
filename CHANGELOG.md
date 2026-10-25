@@ -10,6 +10,35 @@ All notable changes to OpenSL1. Format inspired by [Keep a Changelog](https://ke
 
 ---
 
+## 🚀 [0.1.1](https://github.com/OnSerious/OpenSL1/releases/tag/v0.1.1) – 2026-10-25
+
+**Mixxx never loses the SL1 any more.**
+
+### ✨ Added
+
+- **“Rane SL1” is always available**, also when the box is unplugged. An app that starts without the SL1 keeps its
+  device setup and runs silently on a free-running clock; when the SL1 is plugged in, the driver switches to it on
+  the same timeline (measured: sound 0.24–0.34 s after plug-in, 0 timestamp errors). The same applies if the SL1
+  cannot be opened at start.
+- **Latency reported to apps:** the measured hardware loop of 128 frames (2.9 ms) as 64 frames input + 64 frames
+  output.
+
+### 🔧 Changed
+
+- Headroom statistics restart when the SL1 takes over from the free-running clock, so the log shows real operation
+  only.
+- `ca_loop` also prints how much of the measured loop the driver does not report.
+- Docs: the start-up “burst” on the inputs is explained – a ~1.5 s DC settling of the SL1's analog input stage, not
+  interference.
+
+### ⚠️ Known issues
+
+- “Rane SL1” is listed in every app and in Audio MIDI Setup even when nothing is plugged in.
+- Unchanged from 0.1.0: charger drop-outs, Mixxx 2.6.0-beta freeze when applying sound settings, no microphone
+  input, ad-hoc signed packages.
+
+---
+
 ## 🚀 [0.1.0](https://github.com/OnSerious/OpenSL1/releases/tag/v0.1.0) – 2026-10-25
 
 **First public release: the Rane SL1 is back on macOS.** Tested with Serato CV02 timecode on both decks in Mixxx,
@@ -45,7 +74,7 @@ sleep/wake, unplug/re-plug and charger changes during playback.
 | Issue | Workaround |
 |---|---|
 | The SL1 can drop off USB when the Mac's power source changes; occasionally it must be replugged | Plug the charger in before the set |
-| An app started while the SL1 is missing does not pick it up by itself | Connect the SL1 first, or click *Apply* in Mixxx's sound settings |
+| An app started while the SL1 is missing does not pick it up by itself | Fixed in 0.1.1 |
 | Mixxx 2.6.0-beta can freeze when sound settings are applied with the SL1 | Set up sound before the set; under investigation |
 | Microphone input not exposed; only 44.1 kHz | – |
 | Packages are ad-hoc signed only (not notarized) | *System Settings → Privacy & Security → Open Anyway* |

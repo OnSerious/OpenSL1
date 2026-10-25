@@ -64,6 +64,7 @@ control vinyl.
 | 🎧 **Plug & play** | “Rane SL1” with 4 inputs (Input 1/2) and 4 outputs (Line 1/2) at 44.1 kHz |
 | 💿 **Timecode on both decks** | Serato CV02 control vinyl in Mixxx, tested with real turntables and a DJ mixer |
 | 🔌 **Built for accidents** | Cable pulled mid-set? Plug it back into *any* port – the music returns on its own |
+| 🧷 **Never loses your setup** | “Rane SL1” stays available even when the box is unplugged – start Mixxx first, plug in later |
 | 😴 **Sleep-proof** | Close the lid, open it again – sound is back 45 ms after wake |
 | ⚡ **Fast hardware path** | 2.9 ms through USB and converters |
 | 🩺 **Gig diagnostics** | Levels, gaps, USB errors and power events in the macOS log – see what happened during your set |
@@ -97,7 +98,7 @@ them to macOS as a CoreAudio device. The audio clock comes from the SL1 itself, 
 
 ## 📦 Installation
 
-1. Download **`OpenSL1-0.1.0.pkg`** from the [latest release](https://github.com/OnSerious/OpenSL1/releases/latest).
+1. Download **`OpenSL1-0.1.1.pkg`** from the [latest release](https://github.com/OnSerious/OpenSL1/releases/latest).
 2. Double-click it and follow the installer.
 3. Plug in the SL1 – done. It appears as **“Rane SL1”** in *Audio MIDI Setup* and in Mixxx.
 
@@ -108,7 +109,7 @@ them to macOS as a CoreAudio device. The audio clock comes from the SL1 itself, 
 <details>
 <summary><b>🗑️ Uninstall</b></summary>
 
-Open **`OpenSL1-Uninstall-0.1.0.pkg`** from the same release. That's it.
+Open **`OpenSL1-Uninstall-0.1.1.pkg`** from the same release. That's it.
 </details>
 
 ## Mixxx setup
@@ -134,10 +135,9 @@ Open **`OpenSL1-Uninstall-0.1.0.pkg`** from the same release. That's it.
 
 ## 🎤 Gig checklist
 
-- [ ] Plug the SL1 in **before** you start Mixxx
 - [ ] Plug the Mac's charger in **before** the set – and don't touch it during the set
 - [ ] Main and Headphones set to **None**, buffer 5.8 ms, 44.1 kHz
-- [ ] After Mixxx starts, give it a few seconds before you drop the needle
+- [ ] After plugging in or starting Mixxx, give the SL1 a second or two before you drop the needle
 - [ ] Don't change sound settings mid-set
 - [ ] Cable came out? **Keep Mixxx running** and plug the SL1 back in – any port
 
@@ -213,9 +213,10 @@ running. Best practice: plug the charger in before the set. Details in
 </details>
 
 <details>
-<summary><b>Mixxx started without the SL1 and doesn't find it</b></summary>
+<summary><b>I started Mixxx before plugging in the SL1</b></summary>
 
-Plug in the SL1, then in Mixxx open *Preferences → Sound Hardware* and click **Apply** (or restart Mixxx).
+No problem since 0.1.1: “Rane SL1” stays available even when the box is unplugged, so Mixxx keeps its setup and
+starts normally (silent). Plug in the SL1 – the sound comes within a second, no click needed.
 </details>
 
 <details>
@@ -241,8 +242,8 @@ The driver writes a short report every 30 seconds. In Terminal:
 - [x] CoreAudio driver with timecode on both decks
 - [x] Survive unplugging, sleep and USB drop-outs
 - [x] Installer and uninstaller
-- [ ] Keep “Rane SL1” visible even when unplugged, so Mixxx never loses its setup
-- [ ] Report the measured latency to apps
+- [x] Keep “Rane SL1” visible even when unplugged, so Mixxx never loses its setup
+- [x] Report the measured latency to apps
 - [ ] Notarized installer
 - [ ] Microphone input
 

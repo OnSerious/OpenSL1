@@ -5,9 +5,9 @@
  *
  * Plays a short 1 kHz burst on Line 1 every 0.5 s and finds it again in
  * Input 1 with a matched filter. Both ends are compared in device sample
- * time, so the result is the delay the HAL does not know about yet (USB,
- * converters, input stage): the value kAudioDevicePropertyLatency should
- * report, summed over input and output.
+ * time, so the result is the hardware delay (USB, converters, input stage):
+ * what kAudioDevicePropertyLatency should report, summed over input and
+ * output. The tool also prints how much of it the driver does not report.
  *
  * The SL1's inputs are phono level, so start quietly (default -50 dBFS).
  *
@@ -204,9 +204,10 @@ int main(int argc, char **argv)
     printf(" (peak/mean %.1f)\n", signal / noise);
     qsort(lags, (size_t)found, sizeof(double), cmp_double);
     double med = lags[found / 2];
-    printf("loop delay not known to the HAL: median %.0f frames (%.2f ms), min %.0f, max %.0f\n", med,
+    printf("hardware loop (USB, converters, input stage): median %.0f frames (%.2f ms), min %.0f, max %.0f\n", med,
            med * 1000.0 / RATE, lags[0], lags[found - 1]);
-    double app = med + safety_in + safety_out + lat_in + lat_out + 2.0 * buffer;
+    printf("not covered by the reported latency: %.0f frames\n", med - (double)(lat_in + lat_out));
+    double app = med + safety_in + safety_out + 2.0 * buffer;
     printf("round trip for an app with this buffer: about %.0f frames (%.1f ms)\n", app, app * 1000.0 / RATE);
     return 0;
 }
