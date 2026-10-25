@@ -1,17 +1,33 @@
-# OpenSL1
+<div align="center">
 
-*English: [README.md](README.md)* – die englische Fassung ist ausführlicher (Build, Tests, Aufbau).
+# 🎛️ OpenSL1
 
-Ein freier Treiber für die **Rane SL1** (Serato Scratch Live), damit das Interface mit Timecode-Vinyl in
-[Mixxx](https://mixxx.org) weiterläuft – vor allem auf Macs mit Apple Silicon, für die es keinen Herstellertreiber
-mehr gibt.
+### Deine Rane SL1 lebt. Scratchen mit Timecode-Vinyl auf Apple Silicon – in Mixxx.
+
+Ein freier Open-Source-CoreAudio-Treiber für die **Rane SL1** (Serato Scratch Live, 2004),
+von Grund auf neu geschrieben für Macs, auf denen kein Herstellertreiber mehr läuft.
+
+[![Release](https://img.shields.io/github/v/release/OnSerious/OpenSL1?label=release&color=e4405f)](https://github.com/OnSerious/OpenSL1/releases/latest)
+[![Build](https://github.com/OnSerious/OpenSL1/actions/workflows/build.yml/badge.svg)](https://github.com/OnSerious/OpenSL1/actions/workflows/build.yml)
+[![Lizenz: GPL-3.0-or-later](https://img.shields.io/badge/license-GPL--3.0--or--later-blue)](LICENSE)
+![macOS 12+](https://img.shields.io/badge/macOS-12%2B-000000?logo=apple)
+[![Mixxx](https://img.shields.io/badge/works%20with-Mixxx-f5a623)](https://mixxx.org)
+
+**[⬇️ Download](https://github.com/OnSerious/OpenSL1/releases/latest)** ·
+**[🎚️ Mixxx einrichten](#mixxx-einrichten)** ·
+**[🎤 Für Auftritte](#-für-auftritte)** ·
+**[🇬🇧 English](README.md)** (ausführlicher: Technik, Build, Tests)
+
+</div>
+
+---
 
 OpenSL1 ist ein unabhängiges Projekt und **nicht mit Rane, Serato oder inMusic verbunden, von ihnen unterstützt oder
 empfohlen**. Rane, SL1, Serato und Scratch Live sind Marken ihrer jeweiligen Inhaber und werden hier nur genannt, um
 die Hardware zu bezeichnen. Das Projekt enthält keinen Code und keine Dateien von Rane oder Serato; alles beruht auf
 eigenen Messungen am Gerät (siehe [`docs/PROTOCOL.md`](docs/PROTOCOL.md)).
 
-## Stand
+## 📊 Stand
 
 - **macOS:** Gerät „Rane SL1“ mit 4 Eingängen (Input 1/2) und 4 Ausgängen (Line 1/2) bei 44,1 kHz. Mit Serato-CV02-
   Timecode auf beiden Decks in Mixxx getestet (MacBook Air M4, macOS 27): keine USB-Fehler, keine Lücken im Timecode;
@@ -21,14 +37,14 @@ eigenen Messungen am Gerät (siehe [`docs/PROTOCOL.md`](docs/PROTOCOL.md)).
 - Latenz: Hardware-Schleife (USB + Wandler) 2,9 ms; vom Timecode bis zum Line-Ausgang etwa 35 ms bei 5,8 ms Puffer.
 - Mikrofon-Eingang: nicht freigegeben.
 
-## Getestet mit
+## 🧪 Getestet mit
 
 - Rane SL1 (`13e5:0001`) an einem **MacBook Air 13 Zoll, M4, 2025** (`Mac16,12`, 10 Kerne, 16 GB) mit
   **macOS 27.0.1** (26A434), angeschlossen über einen passiven USB-A-auf-USB-C-Adapter; Mixxx 2.6.0-beta,
   Serato-CV02-Timecode, externer Pioneer-Mixer.
 - Linux (ohne diesen Treiber): CachyOS, Kernel 7.2, Mixxx 2.5.6.
 
-## Installation (macOS)
+## 🚀 Installation (macOS)
 
 `OpenSL1-<Version>.pkg` von der Release-Seite laden und doppelklicken. Der Installer kopiert `OpenSL1.driver` nach
 `/Library/Audio/Plug-Ins/HAL/` und startet den Audiodienst neu. Ab macOS 12, Apple Silicon und Intel.
@@ -52,7 +68,7 @@ Deinstallieren: `OpenSL1-Uninstall-<Version>.pkg` öffnen oder `sudo packaging/u
 4. Nach dem Start von Mixxx ein paar Sekunden warten, bevor die Nadel aufsetzt: Direkt nach dem Start liefern die
    Eingänge der SL1 kurz Störgeräusche.
 
-## Für Auftritte
+## 🎤 Für Auftritte
 
 - Ladekabel des Macs **vor** dem Set einstecken und währenddessen nicht anfassen: Beim Wechsel der Stromquelle fällt
   die SL1 manchmal kurz vom USB (meist ≤ 3 s Stille, selten muss man sie neu einstecken). Details:
@@ -60,12 +76,12 @@ Deinstallieren: `OpenSL1-Uninstall-<Version>.pkg` öffnen oder `sudo packaging/u
 - Abgezogen? Mixxx laufen lassen und die SL1 wieder einstecken (jeder Port geht) – der Ton kommt von selbst wieder.
 - Soundeinstellungen nicht während des Sets ändern: Mixxx 2.6.0-beta kann dabei hängen bleiben (Fehler in Mixxx).
 
-## Clean Room
+## 🧼 Clean Room
 
 Beiträge müssen auf öffentlicher Dokumentation und Messungen an der Hardware beruhen. Kein Code, keine Binärdateien
 und keine Disassemblierung von Rane-/Serato-Software. OpenSL1 gibt die SL1 nicht als andere Hardware aus und umgeht
 keine Lizenzprüfung.
 
-## Lizenz
+## 📜 Lizenz
 
 GPL-3.0-or-later, siehe [`LICENSE`](LICENSE).
