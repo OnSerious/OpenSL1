@@ -191,9 +191,9 @@ int main(int argc, char **argv)
             if (last_zs >= 0) {
                 /* Each step should be exactly one period at 44.1 kHz. */
                 double expect = (zs - last_zs) / 44100.0 * ticks_per_sec;
-                double err_us = fabs((double)(zh - last_zh) - expect) / ticks_per_sec * 1e6;
-                if (err_us > max_step_err_us)
-                    max_step_err_us = err_us;
+                double step_err_us = fabs((double)(zh - last_zh) - expect) / ticks_per_sec * 1e6;
+                if (step_err_us > max_step_err_us)
+                    max_step_err_us = step_err_us;
                 zero_changes++;
             } else {
                 first_zs = zs;
