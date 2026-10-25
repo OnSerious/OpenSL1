@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🎛️ OpenSL1 – Rane-SL1-Treiber (Serato Scratch Live) für macOS
+# 🎛️ OpenSL1 – Inoffizieller Rane-SL1-Treiber (Serato Scratch Live) für macOS
 
 ## Kostenloser, inoffizieller Open-Source-Audiotreiber für die Rane SL1 auf dem Mac
 
@@ -120,7 +120,8 @@ macOS als CoreAudio-Gerät bereit. Der Takt kommt von der SL1 selbst – nichts 
 3. SL1 anstecken – fertig. Sie erscheint als **„Rane SL1“** im *Audio-MIDI-Setup* und in Mixxx.
 
 > [!IMPORTANT]
-> Der Installer ist nicht von Apple notariell beglaubigt (freies Hobbyprojekt ohne bezahltes Entwicklerkonto).
+> Der Installer ist nicht von Apple „notarisiert“: Apple hat ihn nicht geprüft, weil dafür ein bezahltes Entwicklerkonto
+> nötig ist (das hat ein kostenloses Hobbyprojekt nicht). Deshalb zeigt macOS anfangs eine Warnung.
 > Wenn macOS ihn nicht öffnet: **Systemeinstellungen → Datenschutz & Sicherheit → Trotzdem öffnen**.
 
 <details>
@@ -293,7 +294,7 @@ Der Treiber schreibt alle 30 Sekunden einen kurzen Bericht. Im Terminal:
 - [x] Installer und Uninstaller
 - [x] „Rane SL1“ auch ohne angesteckte SL1 sichtbar lassen, damit Mixxx seine Einstellungen nie verliert
 - [x] Gemessene Latenz an Programme melden
-- [ ] Notariell beglaubigter Installer
+- [ ] Von Apple geprüfter („notarisierter“) Installer, ohne macOS-Warnung
 - [ ] Mikrofon-Eingang
 
 ## 🤝 Mitmachen
@@ -337,7 +338,7 @@ oder Serato-Software.
 - **Inoffiziell.** OpenSL1 ist nicht der Originaltreiber. Es stammt nicht von Rane, Serato oder inMusic, wird von ihnen
   nicht empfohlen oder unterstützt und enthält keinen Code, keine Binärdateien und keine Disassemblierung von ihnen.
   Das USB-Verhalten der SL1 wurde an eigener Hardware gemessen.
-- **Nicht signierter Installer.** Der Installer ist nicht notarisiert. Er installiert eine Audiotreiber-Komponente
+- **Nicht signierter Installer.** Der Installer ist nicht von Apple geprüft (nicht „notarisiert“). Er installiert eine Audiotreiber-Komponente
   (`/Library/Audio/Plug-Ins/HAL/OpenSL1.driver`) und fragt nach dem Administrator-Passwort. Der gesamte Quellcode liegt
   in diesem Repository; vergleiche den Installer mit den `SHA256SUMS` des Releases, wenn du sichergehen willst.
 - **Hobbyprojekt.** Keine Garantie für Support, Fehlerbehebungen, Verfügbarkeit oder Kompatibilität mit künftigen

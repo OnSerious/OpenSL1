@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🎛️ OpenSL1 – Rane SL1 (Serato Scratch Live) driver for macOS
+# 🎛️ OpenSL1 – Unofficial Rane SL1 (Serato Scratch Live) driver for macOS
 
 ## Free, open-source, unofficial macOS audio driver for the Rane SL1
 
@@ -119,7 +119,8 @@ them to macOS as a CoreAudio device. The audio clock comes from the SL1 itself, 
 3. Plug in the SL1 – done. It appears as **“Rane SL1”** in *Audio MIDI Setup* and in Mixxx.
 
 > [!IMPORTANT]
-> The installer is not notarized by Apple (this is a free hobby project without a paid developer account).
+> The installer is not “notarized” by Apple: Apple has not checked it, because that requires a paid developer account
+> (a free hobby project has none). That is why macOS shows a warning at first.
 > If macOS refuses to open it, go to **System Settings → Privacy & Security** and click **Open Anyway**.
 
 <details>
@@ -292,7 +293,7 @@ The driver writes a short report every 30 seconds. In Terminal:
 - [x] Installer and uninstaller
 - [x] Keep “Rane SL1” visible even when unplugged, so Mixxx never loses its setup
 - [x] Report the measured latency to apps
-- [ ] Notarized installer
+- [ ] Notarized installer (Apple-checked, no macOS warning)
 - [ ] Microphone input
 
 ## 🤝 Contributing
@@ -335,7 +336,7 @@ OpenSL1 follows a strict clean-room rule: no code, binaries or disassembly from 
 - **Unofficial.** OpenSL1 is not the original driver. It is not made, endorsed or supported by Rane, Serato or
   inMusic, and it contains no code, binaries or disassembly from them. The USB behaviour of the SL1 was measured on
   our own hardware.
-- **Unsigned installer.** The installer is not notarized. It installs an audio driver component
+- **Unsigned installer.** The installer is not checked by Apple (not “notarized”). It installs an audio driver component
   (`/Library/Audio/Plug-Ins/HAL/OpenSL1.driver`) and asks for an administrator password. The full source is in this
   repository; compare the installer with the `SHA256SUMS` of the release if you want to be sure.
 - **Hobby project.** No guarantee of support, fixes, availability or compatibility with future macOS versions.
