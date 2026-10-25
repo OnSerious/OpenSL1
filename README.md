@@ -2,7 +2,7 @@
 
 # 🎛️ OpenSL1 – Rane SL1 (Serato Scratch Live) driver for macOS
 
-## Free, open-source macOS audio driver for the Rane SL1
+## Free, open-source, unofficial macOS audio driver for the Rane SL1
 
 **Use your Rane SL1 (the Serato Scratch Live interface) on Apple Silicon Macs again – scratch Serato timecode vinyl in Mixxx, or use the SL1 as a sound card in VirtualDJ.**
 
@@ -326,8 +326,28 @@ OpenSL1 follows a strict clean-room rule: no code, binaries or disassembly from 
 
 **GPL-3.0-or-later** – see [LICENSE](LICENSE).
 
-Rane, SL1, Serato and Scratch Live are trademarks of their respective owners and are used here only to name the
-hardware this driver works with. OpenSL1 is not affiliated with, endorsed by or supported by Rane, Serato or inMusic.
+> [!WARNING]
+> **Use at your own risk.** OpenSL1 is an unofficial, independent hobby project and is provided “as is”, without
+> warranty of any kind. Installing and using it is entirely your own responsibility. To the extent permitted by law,
+> the author accepts no liability for damage of any kind – to your Mac, the SL1, other equipment, data, recordings or
+> performances (see sections 15 and 16 of the GPL).
+
+- **Unofficial.** OpenSL1 is not the original driver. It is not made, endorsed or supported by Rane, Serato or
+  inMusic, and it contains no code, binaries or disassembly from them. The USB behaviour of the SL1 was measured on
+  our own hardware.
+- **Unsigned installer.** The installer is not notarized. It installs an audio driver component
+  (`/Library/Audio/Plug-Ins/HAL/OpenSL1.driver`) and asks for an administrator password. The full source is in this
+  repository; compare the installer with the `SHA256SUMS` of the release if you want to be sure.
+- **Hobby project.** No guarantee of support, fixes, availability or compatibility with future macOS versions.
+- **Test before you rely on it.** Check your setup well before a gig and keep a backup plan for paid performances.
+- **Other software and licences.** Mixxx, VirtualDJ and any other software you use are subject to their own terms.
+  OpenSL1 does not circumvent licence checks and does not make the SL1 appear as another device.
+- **Privacy.** The driver collects no data and has no network access.
+- **Donations.** Support via Ko-fi is voluntary. It is a gift, not a purchase, and gives no claim to support,
+  features or warranty.
+- **Trademarks.** Rane, SL1, Serato, Scratch Live and other names are trademarks of their respective owners and are
+  used here only to name the hardware and software this driver works with. OpenSL1 is not affiliated with, endorsed
+  by or supported by Rane, Serato or inMusic.
 
 <div align="center">
 
