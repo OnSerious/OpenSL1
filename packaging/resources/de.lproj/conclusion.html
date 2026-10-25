@@ -1,7 +1,14 @@
-<!DOCTYPE html><html><head><meta charset="utf-8"><style>body{font-family:-apple-system,sans-serif;font-size:13px}code{font-size:12px}</style></head><body>
+<!DOCTYPE html><html><head><meta charset="utf-8"><style>body{font-family:-apple-system,sans-serif;font-size:13px}code{font-size:12px}ul{padding-left:18px}.warn{border:1px solid #c33;border-radius:6px;padding:6px 10px;background:rgba(200,50,50,.08)}</style></head><body>
 <h2>Fertig</h2>
 <p>Stecken Sie die SL1 an (direkt am Mac, möglichst ohne Hub). In Mixxx unter
-<i>Einstellungen → Soundhardware</i> das Gerät <b>„Rane SL1“</b> und 44100 Hz wählen.</p>
+<i>Einstellungen → Soundhardware</i> das Gerät <b>„Rane SL1“</b>, <b>CoreAudio</b> und 44100 Hz wählen.</p>
+<ul>
+<li>Puffer: <b>5,8 ms</b> ist der sichere Standard. 2,9 ms lief auf einem Test-Mac, aber mit weniger Reserve.</li>
+<li>Main und Kopfhörer auf <b>Keine</b> – die SL1 ist in Mixxx die einzige Soundkarte.</li>
+<li>Netzteil des Macs <b>vor</b> dem Set anstecken und das Setup vor einem Gig testen.</li>
+</ul>
+<p>Probleme oder Fragen? Eröffnen Sie ein Issue unter github.com/OnSerious/OpenSL1. Wenn OpenSL1 Ihnen geholfen hat, freue ich mich
+über einen Kaffee: ko-fi.com/OnSerious (freiwillig, kein Kauf, kein Anspruch auf Support).</p>
 <p>Zum Entfernen das Paket <b>„OpenSL1-Uninstall“</b> öffnen oder im Quelltext-Ordner
 <code>sudo packaging/uninstall.sh</code> ausführen.</p>
 </body></html>

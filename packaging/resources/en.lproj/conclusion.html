@@ -1,7 +1,14 @@
-<!DOCTYPE html><html><head><meta charset="utf-8"><style>body{font-family:-apple-system,sans-serif;font-size:13px}code{font-size:12px}</style></head><body>
+<!DOCTYPE html><html><head><meta charset="utf-8"><style>body{font-family:-apple-system,sans-serif;font-size:13px}code{font-size:12px}ul{padding-left:18px}.warn{border:1px solid #c33;border-radius:6px;padding:6px 10px;background:rgba(200,50,50,.08)}</style></head><body>
 <h2>Done</h2>
 <p>Plug in the SL1 (directly into the Mac, ideally without a hub). In Mixxx, open
-<i>Preferences → Sound Hardware</i>, choose <b>“Rane SL1”</b> and 44100 Hz.</p>
+<i>Preferences → Sound Hardware</i>, choose <b>“Rane SL1”</b>, <b>CoreAudio</b> and 44100 Hz.</p>
+<ul>
+<li>Buffer: <b>5.8 ms</b> is the safe default. 2.9 ms worked on one test Mac, but with less safety margin.</li>
+<li>Set Main and Headphones to <b>None</b> – use the SL1 as your only sound card in Mixxx.</li>
+<li>Plug the Mac’s charger in <b>before</b> the set and test your setup before a gig.</li>
+</ul>
+<p>Problems or questions? Open an issue at github.com/OnSerious/OpenSL1. If OpenSL1 helped you, a coffee is welcome:
+ko-fi.com/OnSerious (voluntary, no purchase, no claim to support).</p>
 <p>To remove the driver, open the <b>“OpenSL1-Uninstall”</b> package, or run <code>sudo packaging/uninstall.sh</code>
 from the source tree.</p>
 </body></html>

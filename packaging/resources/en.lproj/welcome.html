@@ -1,9 +1,21 @@
-<!DOCTYPE html><html><head><meta charset="utf-8"><style>body{font-family:-apple-system,sans-serif;font-size:13px}code{font-size:12px}</style></head><body>
-<h2>OpenSL1</h2>
+<!DOCTYPE html><html><head><meta charset="utf-8"><style>body{font-family:-apple-system,sans-serif;font-size:13px}code{font-size:12px}ul{padding-left:18px}.warn{border:1px solid #c33;border-radius:6px;padding:6px 10px;background:rgba(200,50,50,.08)}</style></head><body>
+<h2>OpenSL1 – unofficial Rane SL1 driver for macOS</h2>
 <p>This installer sets up a free CoreAudio driver for the <b>Rane SL1</b> (Serato Scratch Live).
 Afterwards the SL1 shows up as the audio device <b>“Rane SL1”</b> with 4 inputs (Input 1/2) and 4 outputs (Line 1/2),
-for example for Mixxx with timecode vinyl.</p>
-<p>The driver is copied to <code>/Library/Audio/Plug-Ins/HAL/OpenSL1.driver</code>. The macOS audio server
-restarts afterwards, so running audio apps will drop out for a moment.</p>
-<p>OpenSL1 is an independent open-source project and is not affiliated with Rane, Serato or inMusic.</p>
+for example for timecode vinyl.</p>
+<p><b>Which DJ software works?</b></p>
+<ul>
+<li><b>Mixxx</b> (free): works, timecode on both decks tested with Serato CV02 vinyl.</li>
+<li><b>VirtualDJ</b>: works as a sound card (tested). Its timecode feature needs a paid VirtualDJ licence and has not been tested.</li>
+<li><b>Serato Scratch Live</b> is legacy software and does not run on Apple Silicon. <b>Serato DJ Lite/Pro</b> do not accept the SL1.
+OpenSL1 will never present the SL1 as another device.</li>
+</ul>
+<p class="warn"><b>Unofficial – use at your own risk.</b> OpenSL1 is an independent hobby project and not the original driver.
+It is not made, endorsed or supported by Rane, Serato or inMusic. It is provided “as is”, without warranty; to the extent
+permitted by law the author accepts no liability for damage of any kind (see the licence on the next pages).
+Test your setup well before a gig.</p>
+<p>The driver is copied to <code>/Library/Audio/Plug-Ins/HAL/OpenSL1.driver</code>. The macOS audio server restarts afterwards,
+so running audio apps will drop out for a moment. This installer is not “notarized”, i.e. not checked by Apple, because
+that needs a paid developer account; that is why macOS may have shown a warning. The source code is public at
+github.com/OnSerious/OpenSL1.</p>
 </body></html>

@@ -1,9 +1,21 @@
-<!DOCTYPE html><html><head><meta charset="utf-8"><style>body{font-family:-apple-system,sans-serif;font-size:13px}code{font-size:12px}</style></head><body>
-<h2>OpenSL1</h2>
+<!DOCTYPE html><html><head><meta charset="utf-8"><style>body{font-family:-apple-system,sans-serif;font-size:13px}code{font-size:12px}ul{padding-left:18px}.warn{border:1px solid #c33;border-radius:6px;padding:6px 10px;background:rgba(200,50,50,.08)}</style></head><body>
+<h2>OpenSL1 – inoffizieller Rane-SL1-Treiber für macOS</h2>
 <p>Dieser Installer richtet einen freien CoreAudio-Treiber für die <b>Rane SL1</b> (Serato Scratch Live) ein.
 Danach erscheint die SL1 als Audiogerät <b>„Rane SL1“</b> mit 4 Eingängen (Input 1/2) und 4 Ausgängen (Line 1/2),
-zum Beispiel für Mixxx mit Timecode-Vinyl.</p>
-<p>Der Treiber wird nach <code>/Library/Audio/Plug-Ins/HAL/OpenSL1.driver</code> kopiert. Danach startet der
-Audio-Dienst von macOS neu; laufende Audio-Programme setzen dabei kurz aus.</p>
-<p>OpenSL1 ist ein unabhängiges Open-Source-Projekt und nicht mit Rane, Serato oder inMusic verbunden.</p>
+zum Beispiel für Timecode-Vinyl.</p>
+<p><b>Welche DJ-Software funktioniert?</b></p>
+<ul>
+<li><b>Mixxx</b> (kostenlos): funktioniert, Timecode auf beiden Decks mit Serato-CV02-Vinyl getestet.</li>
+<li><b>VirtualDJ</b>: funktioniert als Soundkarte (getestet). Die Timecode-Funktion braucht eine kostenpflichtige VirtualDJ-Lizenz und ist nicht getestet.</li>
+<li><b>Serato Scratch Live</b> ist veraltet und läuft auf Apple Silicon nicht. <b>Serato DJ Lite/Pro</b> nehmen die SL1 nicht an.
+OpenSL1 gibt die SL1 nie als anderes Gerät aus.</li>
+</ul>
+<p class="warn"><b>Inoffiziell – Nutzung auf eigene Gefahr.</b> OpenSL1 ist ein unabhängiges Hobbyprojekt und nicht der
+Originaltreiber. Es stammt nicht von Rane, Serato oder inMusic und wird von ihnen nicht unterstützt. Es wird „wie besehen“
+ohne Gewährleistung bereitgestellt; soweit gesetzlich zulässig, übernimmt der Autor keine Haftung für Schäden jeder Art
+(siehe Lizenz auf den nächsten Seiten). Testen Sie Ihr Setup rechtzeitig vor einem Gig.</p>
+<p>Der Treiber wird nach <code>/Library/Audio/Plug-Ins/HAL/OpenSL1.driver</code> kopiert. Danach startet der Audio-Dienst von macOS
+neu; laufende Audio-Programme setzen dabei kurz aus. Dieser Installer ist nicht „notarisiert“, also nicht von Apple geprüft,
+weil dafür ein bezahltes Entwicklerkonto nötig ist; deshalb hat macOS eventuell eine Warnung gezeigt. Der Quellcode ist
+öffentlich unter github.com/OnSerious/OpenSL1.</p>
 </body></html>

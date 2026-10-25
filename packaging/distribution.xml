@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <installer-gui-script minSpecVersion="2">
-    <title>OpenSL1 – Rane SL1 driver</title>
+    <title>OpenSL1 – Unofficial Rane SL1 driver</title>
     <welcome file="welcome.html" mime-type="text/html"/>
     <license file="license.txt" mime-type="text/plain"/>
     <conclusion file="conclusion.html" mime-type="text/html"/>
