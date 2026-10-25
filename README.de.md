@@ -33,6 +33,7 @@
 - [Voraussetzungen](#-voraussetzungen)
 - [Installation](#-installation)
 - [Mixxx einrichten](#mixxx-einrichten)
+- [VirtualDJ einrichten](#virtualdj-einrichten)
 - [Checkliste für Auftritte](#-checkliste-für-auftritte)
 - [Messwerte](#-messwerte)
 - [FAQ](#-faq)
@@ -70,7 +71,7 @@ darüber suchst du dir aus:
 | Software | Mit der SL1 auf macOS |
 |---|---|
 | **[Mixxx](https://mixxx.org)** (kostenlos, Open Source) | ✅ **Funktioniert** – Timecode auf beiden Decks, getestet mit Serato-CV02-Vinyl |
-| **VirtualDJ** | 🟡 Öffnet die SL1 als Soundkarte und spielt auf Line 1/2 (getestet). Timecode (DVS) braucht eine kostenpflichtige VirtualDJ-Lizenz und ist **nicht** getestet. VirtualDJ hat eigene Control-Vinyl und liest laut Berichten aus der Community auch Serato CV02 – hier nicht überprüft. |
+| **VirtualDJ** | 🟡 Öffnet die SL1 als Soundkarte und spielt auf Line 1 (getestet) – siehe [VirtualDJ einrichten](#virtualdj-einrichten). Timecode (DVS) braucht eine kostenpflichtige VirtualDJ-Lizenz und ist **nicht** getestet. VirtualDJ hat eigene Control-Vinyl und liest laut Berichten aus der Community auch Serato CV02 – hier nicht überprüft. |
 | **Serato Scratch Live** | ❌ Veraltete 32-Bit-Intel-Software – läuft auf Apple Silicon nicht, auch nicht über Rosetta |
 | **Serato DJ Lite / Pro** | ❌ Nimmt die SL1 nicht an. Das könnte nur Serato ändern – OpenSL1 gibt die SL1 nie als anderes Gerät aus |
 
@@ -168,6 +169,36 @@ Standard ist aber 5,8 ms (siehe oben).
 ![Mixxx Vinyl-Steuerung: Serato CV02 Vinyl Side A, 33,3 RPM, Vorlauf 28 s, Alpha-Beta-Filter auf Deck 1 und 2](docs/images/mixxx-rane-sl1-vinyl-control-serato-cv02.png)
 </details>
 
+## VirtualDJ einrichten
+
+> [!NOTE]
+> **Soundkarte: funktioniert. Timecode: noch nicht getestet** – nur weil VirtualDJ für Timecode/DVS eine
+> kostenpflichtige Lizenz (Abo) braucht, die wir nicht haben. VirtualDJ nimmt die Einstellungen unten an; ob der
+> Timecode dann läuft, ist offen. **Wenn du eine VirtualDJ-Lizenz hast, melde dich bitte in einem Issue!**
+
+| Wo | Einstellung |
+|---|---|
+| Settings → Audio → Outputs | **Separate decks**: Deck 1 → „Rane SL1“ **chan 1 & 2**, Deck 2 → **chan 3 & 4** |
+| Settings → Audio → Inputs | **Timecode signal**: Timecode 1 → „Rane SL1“ **chan 1 & 2**, Timecode 2 → **chan 3 & 4** |
+| Settings → Timecode | Modus **relative**, Record **Serato side A** (CV02) – oder VirtualDJs eigene Control-Vinyl |
+
+| VirtualDJ (macOS, v2026) | Stand |
+|---|---|
+| Findet und öffnet „Rane SL1“ | ✅ getestet |
+| Musik auf Line 1 | ✅ getestet |
+| Audio-Einstellungen ändern (6×) | ✅ getestet – kein Hänger, keine USB-Fehler |
+| Musik auf Line 2 | ❔ noch nicht getestet |
+| Timecode / DVS | ❔ nicht getestet – braucht eine kostenpflichtige VirtualDJ-Lizenz (zeigt „Timecode: License needed“) |
+| Serato-CV02-Vinyl in VirtualDJ | ❔ laut Berichten aus der Community ja – hier nicht überprüft |
+
+<details>
+<summary><b>📸 Screenshots: die Rane SL1 in VirtualDJ</b></summary>
+
+![VirtualDJ Audio-Einstellungen: getrennte Decks, Deck 1 und 2 auf Rane SL1 Kanal 1 & 2 und 3 & 4, Timecode-Eingänge auf denselben Kanälen](docs/images/virtualdj-rane-sl1-audio-settings.png)
+
+![VirtualDJ Timecode-Einstellungen: Modus relativ, Serato Side A für Timecode 1 und 2](docs/images/virtualdj-rane-sl1-timecode-settings.png)
+</details>
+
 ## 🎤 Checkliste für Auftritte
 
 - [ ] Ladekabel des Macs **vor** dem Set einstecken – und während des Sets nicht anfassen
@@ -225,21 +256,8 @@ SL1 nie als anderes Gerät ausgeben. Nimm Mixxx oder VirtualDJ mit kostenpflicht
 <details>
 <summary><b>Geht sie auch mit anderen Programmen?</b></summary>
 
-Die SL1 ist ein normales CoreAudio-Gerät, andere Programme können sie also als Soundkarte nutzen. **VirtualDJ** (macOS)
-öffnet sie, spielt auf Line 1/2 und übersteht Änderungen der Audio-Einstellungen; die Timecode-Steuerung (DVS) braucht
-dort eine kostenpflichtige VirtualDJ-Lizenz und ist noch ungetestet. VirtualDJ hat eigene Control-Vinyl und liest laut Berichten aus der Community auch Serato CV02. Timecode-Steuerung
-ist mit Mixxx getestet.
-
-<details>
-<summary><b>📸 Screenshots: die Rane SL1 in VirtualDJ</b></summary>
-
-VirtualDJ (macOS) mit der SL1 als Soundkarte. Die Timecode-Einstellungen nehmen Serato Side A an, ohne Lizenz zeigt
-VirtualDJ aber „Timecode: License needed“ – Timecode wurde nicht getestet.
-
-![VirtualDJ Audio-Einstellungen: getrennte Decks, Deck 1 und 2 auf Rane SL1 Kanal 1 & 2 und 3 & 4, Timecode-Eingänge auf denselben Kanälen](docs/images/virtualdj-rane-sl1-audio-settings.png)
-
-![VirtualDJ Timecode-Einstellungen: Modus relativ, Serato Side A für Timecode 1 und 2](docs/images/virtualdj-rane-sl1-timecode-settings.png)
-</details>
+Ja – die SL1 ist ein normales CoreAudio-Gerät, jedes Programm kann sie als Soundkarte nutzen. Für **VirtualDJ** siehe
+[VirtualDJ einrichten](#virtualdj-einrichten). Timecode-Steuerung ist mit Mixxx getestet.
 </details>
 
 <details>
