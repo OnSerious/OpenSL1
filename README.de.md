@@ -1,10 +1,10 @@
 <div align="center">
 
-# 🎛️ OpenSL1
+# 🎛️ OpenSL1 – Rane-SL1-Treiber (Serato Scratch Live) für macOS
 
-## Der fehlende macOS-Treiber für die Rane SL1
+## Kostenloser Open-Source-Audiotreiber für die Rane SL1 auf dem Mac
 
-**Hol deine Serato-Scratch-Live-Box auf Apple Silicon zurück – und scratche Timecode-Vinyl in Mixxx.**
+**Nutze deine Rane SL1 (das Serato-Scratch-Live-Interface) wieder auf Macs mit Apple Silicon – scratche Serato-Timecode-Vinyl in Mixxx oder verwende die SL1 als Soundkarte in VirtualDJ.**
 
 <img alt="macOS 12+" src="https://img.shields.io/badge/macOS-12%2B-000000?style=for-the-badge&logo=apple&logoColor=white"> <img alt="Apple Silicon nativ" src="https://img.shields.io/badge/Apple%20Silicon-nativ-000000?style=for-the-badge&logo=apple&logoColor=white"> <img alt="CoreAudio-Treiber" src="https://img.shields.io/badge/CoreAudio-Treiber-1f6feb?style=for-the-badge"> <img alt="Läuft mit Mixxx" src="https://img.shields.io/badge/Mixxx-ready-f5a623?style=for-the-badge">
 
@@ -27,6 +27,7 @@
 <summary><b>📑 Inhalt</b></summary>
 
 - [Warum OpenSL1?](#-warum-opensl1)
+- [Welche DJ-Software funktioniert?](#-welche-dj-software-funktioniert-mit-der-sl1-auf-macos)
 - [Funktionen](#-funktionen)
 - [So funktioniert's](#-so-funktionierts)
 - [Voraussetzungen](#-voraussetzungen)
@@ -60,6 +61,18 @@ Timecode-Vinyl liest.
 > [!NOTE]
 > OpenSL1 ist ein unabhängiges Open-Source-Projekt. Es stammt **nicht** von Rane, Serato oder inMusic, wird von ihnen
 > nicht unterstützt und enthält keinen Code von ihnen.
+
+## 🧩 Welche DJ-Software funktioniert mit der SL1 auf macOS?
+
+Den OpenSL1-Treiber brauchst du für alle: Er sorgt dafür, dass macOS die SL1 als Soundkarte sieht. Die DJ-Software
+darüber suchst du dir aus:
+
+| Software | Mit der SL1 auf macOS |
+|---|---|
+| **[Mixxx](https://mixxx.org)** (kostenlos, Open Source) | ✅ **Funktioniert** – Timecode auf beiden Decks, getestet mit Serato-CV02-Vinyl |
+| **VirtualDJ** | 🟡 Öffnet die SL1 als Soundkarte und spielt auf Line 1/2 (getestet). Timecode (DVS) braucht eine kostenpflichtige VirtualDJ-Lizenz und ist **nicht** getestet. VirtualDJ hat eigene Control-Vinyl und liest laut Berichten aus der Community auch Serato CV02 – hier nicht überprüft. |
+| **Serato Scratch Live** | ❌ Veraltete 32-Bit-Intel-Software – läuft auf Apple Silicon nicht, auch nicht über Rosetta |
+| **Serato DJ Lite / Pro** | ❌ Nimmt die SL1 nicht an. Das könnte nur Serato ändern – OpenSL1 gibt die SL1 nie als anderes Gerät aus |
 
 ## ✨ Funktionen
 
@@ -97,8 +110,8 @@ macOS als CoreAudio-Gerät bereit. Der Takt kommt von der SL1 selbst – nichts 
 | 💻 Mac | Apple Silicon (ab M1) oder Intel |
 | 🍏 macOS | ab 12 Monterey |
 | 🎛️ Interface | Rane SL1 |
-| 🎚️ DJ-Software | [Mixxx](https://mixxx.org) (kostenlos) |
-| 💿 Timecode-Vinyl | Serato CV02 (Side A, 33⅓) |
+| 🎚️ DJ-Software | [Mixxx](https://mixxx.org) (kostenlos, getestet) – oder VirtualDJ als Soundkarte |
+| 💿 Timecode-Vinyl | Serato CV02 (Side A, 33⅓) – getestet; anderes Timecode-Vinyl hängt von deiner DJ-Software ab und ist ungetestet |
 
 ## 📦 Installation
 
@@ -160,9 +173,34 @@ Gemessen an einem MacBook Air M4 mit echtem Timecode:
 ## ❓ FAQ
 
 <details>
-<summary><b>Läuft die SL1 damit in Serato DJ?</b></summary>
+<summary><b>Gibt es einen Rane-SL1-Treiber für macOS und Apple Silicon?</b></summary>
 
-Nein. Serato DJ hat die SL1 nie unterstützt, und OpenSL1 wird die SL1 nie als anderes Gerät ausgeben. Nimm Mixxx.
+Ja – OpenSL1 ist ein kostenloser Open-Source-CoreAudio-Treiber für die Rane SL1 (Serato Scratch Live) auf Macs mit
+Apple Silicon ab macOS 12 (der Installer ist universal, Intel sollte also auch gehen – ungetestet). Lade den Installer aus dem
+[neuesten Release](https://github.com/OnSerious/OpenSL1/releases/latest), stecke die Box an, und sie erscheint als
+Soundkarte „Rane SL1“.
+</details>
+
+<details>
+<summary><b>Läuft Serato Scratch Live noch auf einem aktuellen Mac?</b></summary>
+
+Nein. Serato Scratch Live ist veraltete 32-Bit-Intel-Software und läuft deshalb auf Apple Silicon nicht – auch nicht
+über Rosetta. OpenSL1 ersetzt den fehlenden Treiber; als DJ-Software nimmst du Mixxx (kostenlos) oder VirtualDJ.
+</details>
+
+<details>
+<summary><b>Welche Timecode-Vinyl kann ich mit der SL1 nutzen?</b></summary>
+
+Serato CV02 (Side A, 33⅓) ist mit Mixxx getestet. VirtualDJ bringt eigene Control-Vinyl mit und liest laut Berichten
+aus der Community auch Serato CV02; Mixxx führt in den Vinyl-Einstellungen weitere Timecode-Typen auf. Die sind hier
+ungetestet: OpenSL1 liefert nur das Audiosignal, das Timecode-Decodieren übernimmt deine DJ-Software.
+</details>
+
+<details>
+<summary><b>Läuft die SL1 damit in Serato DJ Lite oder Pro?</b></summary>
+
+Nein. Serato DJ hat die SL1 nie unterstützt und nimmt sie nicht an – das könnte nur Serato ändern. OpenSL1 wird die
+SL1 nie als anderes Gerät ausgeben. Nimm Mixxx oder VirtualDJ mit kostenpflichtiger Lizenz.
 </details>
 
 <details>
@@ -170,7 +208,8 @@ Nein. Serato DJ hat die SL1 nie unterstützt, und OpenSL1 wird die SL1 nie als a
 
 Die SL1 ist ein normales CoreAudio-Gerät, andere Programme können sie also als Soundkarte nutzen. **VirtualDJ** (macOS)
 öffnet sie, spielt auf Line 1/2 und übersteht Änderungen der Audio-Einstellungen; die Timecode-Steuerung (DVS) braucht
-dort eine kostenpflichtige VirtualDJ-Lizenz und ist noch ungetestet. Timecode-Steuerung ist mit Mixxx getestet.
+dort eine kostenpflichtige VirtualDJ-Lizenz und ist noch ungetestet. VirtualDJ hat eigene Control-Vinyl und liest laut Berichten aus der Community auch Serato CV02. Timecode-Steuerung
+ist mit Mixxx getestet.
 </details>
 
 <details>
