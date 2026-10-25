@@ -134,12 +134,17 @@ macOS als CoreAudio-Gerät bereit. Der Takt kommt von der SL1 selbst – nichts 
 | Wo | Einstellung |
 |---|---|
 | macOS fragt „Mixxx möchte auf das Mikrofon zugreifen“ | **Erlauben** – sonst kommt kein Timecode in Mixxx an |
-| Einstellungen → Soundhardware | **CoreAudio**, **44100 Hz**, Puffer **5,8 ms** |
+| Einstellungen → Soundhardware | **CoreAudio**, **44100 Hz**, Puffer **5,8 ms** (2,9 ms möglich, siehe unten) |
 | Ausgang: Deck 1 / Deck 2 | „Rane SL1“ Kanäle **1–2** / **3–4** |
 | Ausgang: Main, Kopfhörer | **Keine** – das macht dein DJ-Mixer |
 | Eingang: Vinyl Control 1 / 2 | „Rane SL1“ Kanäle **1–2** / **3–4** |
 | Einstellungen → Vinyl-Steuerung | **Serato CV02 Vinyl, Side A**, 33⅓, Modus **REL** |
 | Vinyl-Steuerung → Filter | **Alpha-Beta** zum Scratchen |
+
+> [!TIP]
+> **Puffer: 5,8 ms ist der sichere Standard.** 2,9 ms lief auf einem MacBook Air M4 ohne einen einzigen Fehler
+> (455 258 Pakete, 0 verspätete Zugriffe), aber mit deutlich weniger Sicherheitsreserve. Auf anderen Macs, bei hoher
+> CPU-Last oder mit anderen Mixxx-Versionen kann es bei 2,9 ms knacksen – teste es vor einem Gig.
 
 > [!TIP]
 > **Zum Scratchen ist Alpha-Beta besser als Kalman.** Mit dem Kalman-Filter läuft der Track nach einem Handstopp kurz
