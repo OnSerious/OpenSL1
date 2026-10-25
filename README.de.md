@@ -41,6 +41,12 @@
 
 ## 💡 Warum OpenSL1?
 
+> [!NOTE]
+> **Welche Box ist gemeint?** Das ursprüngliche Rane-Interface für **Serato Scratch Live** von 2004 – eine kleine Box
+> mit Input 1/2, Thru- und Line-Buchsen für zwei Decks. Draufgestanden hat einfach „Serato Scratch Live“; den Namen
+> **SL1** bekam sie erst später, als SL2 und SL3 erschienen. Am USB meldet sie sich als `Serato Scratch LIVE(c)2004`
+> (`13e5:0001`).
+
 Deine SL1 funktioniert noch. Die Software dazu nicht mehr: Serato Scratch Live ist 32-Bit-Intel-Software, und Macs mit
 Apple Silicon können sie nicht ausführen – auch nicht über Rosetta. Serato DJ hat die SL1 nie unterstützt.
 
