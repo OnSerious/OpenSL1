@@ -112,9 +112,9 @@ reported to apps as `kAudioDevicePropertyLatency`: 64 frames input + 64 frames o
 
 | Feature | What it does | Tested |
 |---|---|---|
-| **Watchdog** | Checks Input 1 every 100 ms; after 300 ms without data (USB glitch, re-plug, wake) it reopens the SL1 and continues on the same timeline – the app keeps running | `OPENSL1_TEST_STALL` in `hal_harness`: 1 restart, 0 timestamp errors; real unplug/replug with Mixxx |
+| **Watchdog** | Checks all four streams (Input 1/2, Line 1/2) every 100 ms; if one of them delivers nothing for 300 ms (USB glitch, re-plug, wake) it reopens the SL1 and continues on the same timeline – the app keeps running | `OPENSL1_TEST_STALL` in `hal_harness`: 1 restart, 0 timestamp errors; real unplug/replug with Mixxx |
 | **Bus reset after a drop-out** | If the SL1 comes back with its interfaces missing, does not answer SET_CONFIGURATION, or (still on the bus) does not answer SET_INTERFACE, the driver re-enumerates it – at most once every 10 s | `OPENSL1_TEST_RESET`: audio back ~0.5 s after the reset; real charger changes |
-| **No stale input** | Frames that have not arrived yet (or were overwritten) read as silence, never as old timecode | `OPENSL1_TEST_STALL` |
+| **No stale input** | Frames that have not arrived yet (or were overwritten) read as silence, never as old timecode – tracked separately for Input 1 and Input 2; positions skipped by a restart or resync are silenced | `OPENSL1_TEST_STALL` |
 | **Quiet start/stop** | No `DeviceIsRunning` notifications from StartIO/StopIO – the HAL tracks that itself (OpenSL3 removed them when fixing a busy audio service) | – |
 | **OwnedObjects** | Honours the class-ID qualifier (a query for controls returns none, not the streams) | – |
 | **Open retry** | StartIO retries opening the SL1 three times | – |

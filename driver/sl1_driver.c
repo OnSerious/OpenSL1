@@ -151,11 +151,11 @@ static struct {
     io_iterator_t added_iter, removed_iter;
 
     int attached; /* the SL1 is plugged in */
-    int present;  /* the device is published (always, see drv_Initialize) */
+    _Atomic int present; /* the device is published (always, see drv_Initialize) */
     uint32_t location;
-    UInt32 io_clients;
+    _Atomic UInt32 io_clients; /* changed under lock, read lock-free by property calls */
     sl1_device *usb;
-    UInt32 stream_active[2];
+    _Atomic UInt32 stream_active[2];
 
     /* Shared rings, indexed by device sample time. */
     int16_t in_ring[RING_FRAMES * CHANNELS];
@@ -200,6 +200,8 @@ static struct {
      * Below 0 means the HAL read stale input or USB sent silence.
      */
     _Atomic uint64_t in_written;  /* Input 1 frames in the ring */
+    _Atomic uint64_t b_written;   /* Input 2 frames in the ring (own freshness, it can lag or stop) */
+    _Atomic uint64_t progress[4]; /* packets per stream (A out, A in, B out, B in) for the watchdog */
     _Atomic uint64_t out_taken;   /* Line 1 frames taken by USB */
     _Atomic int64_t in_margin_min, out_margin_min;
     _Atomic uint64_t in_late, out_late;
@@ -208,7 +210,7 @@ static struct {
 
     /* Watchdog (notify queue). */
     dispatch_source_t watchdog;
-    uint64_t wd_last;
+    uint64_t wd_last[4];
     int wd_stall;
     unsigned wd_ticks;
     unsigned restarts;
@@ -303,6 +305,15 @@ static void ring_put(const int16_t *src, unsigned frames, uint64_t pos, int ch0)
     }
 }
 
+/* Silences ring positions [from, to) of one input pair (at most one ring lap). */
+static void ring_silence(uint64_t from, uint64_t to, int ch0)
+{
+    if (to <= from)
+        return;
+    uint64_t n = to - from > RING_FRAMES ? RING_FRAMES : to - from;
+    ring_put(NULL, (unsigned)n, to - n, ch0);
+}
+
 /* Frames a packet in this bus frame should have carried, from the measured rate. */
 static unsigned expected_frames(uint64_t pos, uint64_t usb_frame)
 {
@@ -378,6 +389,8 @@ static void on_in(void *ctx, sl1_stream_id id, const int16_t *data, unsigned fra
                 g.a_count = s0 > 0 ? (uint64_t)llround(s0) : 0;
                 g.rate_f = g.resume_per_tick * g.ticks_per_frame;
                 g.resume = 0;
+                /* Positions skipped during the stall hold data from an older ring lap. */
+                ring_silence(atomic_load(&g.in_written), g.a_count, 0);
             }
             g.a_base = g.a_count;
         }
@@ -413,9 +426,11 @@ static void on_in(void *ctx, sl1_stream_id id, const int16_t *data, unsigned fra
         clock_publish((double)g.a_count, host_at_frame(g.a_end), g.rate_f / g.ticks_per_frame);
         atomic_store(&g.clock_valid, 1);
         atomic_fetch_add(&g.in_packets, 1);
+        atomic_fetch_add_explicit(&g.progress[SL1_STREAM_A_IN], 1, memory_order_relaxed);
         if (++g.meter[0].packets >= METER_PACKETS)
             meter_log_and_reset();
     } else if (id == SL1_STREAM_B_IN) {
+        atomic_fetch_add_explicit(&g.progress[SL1_STREAM_B_IN], 1, memory_order_relaxed);
         if (!g.a_started)
             return;
         /* Input 2 follows Input 1's counter; resync if it ever drifts away. */
@@ -425,6 +440,8 @@ static void on_in(void *ctx, sl1_stream_id id, const int16_t *data, unsigned fra
                 g.meter[1].resyncs++;
             g.b_started = 1;
             g.b_count = (uint64_t)(expect < 0 ? 0 : expect);
+            /* A forward jump skips positions that still hold an older ring lap. */
+            ring_silence(atomic_load(&g.b_written), g.b_count, 2);
         }
         if (!frames) {
             frames = expected_frames(g.b_count, usb_frame);
@@ -434,6 +451,7 @@ static void on_in(void *ctx, sl1_stream_id id, const int16_t *data, unsigned fra
         meter_add(1, data, frames);
         ring_put(data, frames, g.b_count, 2);
         g.b_count += frames;
+        atomic_store_explicit(&g.b_written, g.b_count, memory_order_release);
     }
 }
 
@@ -443,6 +461,7 @@ static unsigned on_out(void *ctx, sl1_stream_id id, int16_t *data, unsigned max_
     (void)ctx;
     int k = id == SL1_STREAM_A_OUT ? 0 : 1;
     unsigned ch0 = (unsigned)k * 2;
+    atomic_fetch_add_explicit(&g.progress[id], 1, memory_order_relaxed);
     if (!g.a_started) {
         memset(data, 0, 44 * 4);
         return 44;
@@ -694,6 +713,7 @@ static OSStatus usb_start_locked(int restart)
     if (!g.resume) {
         memset(g.in_ring, 0, sizeof(g.in_ring));
         memset(g.out_ring, 0, sizeof(g.out_ring));
+        atomic_store(&g.b_written, 0);
     }
     g.a_started = g.b_started = 0;
     memset(g.meter, 0, sizeof(g.meter));
@@ -757,11 +777,18 @@ static void start_free_clock_locked(void)
     g.ticks_per_frame = 1e6 * tb.denom / tb.numer;
     memset(g.in_ring, 0, sizeof(g.in_ring));
     memset(g.out_ring, 0, sizeof(g.out_ring));
+    atomic_store(&g.b_written, 0);
     clock_publish(0, (double)mach_absolute_time(), SL1_RATE / 1000.0 / g.ticks_per_frame);
     atomic_store(&g.clock_valid, 1);
     g.free_running = 1;
     g.seed++;
     LOG("IO started without the SL1: silence until it is available");
+}
+
+static void wd_snapshot(void)
+{
+    for (int i = 0; i < 4; i++)
+        g.wd_last[i] = atomic_load_explicit(&g.progress[i], memory_order_relaxed);
 }
 
 /*
@@ -779,17 +806,23 @@ static void watchdog_tick(void)
     }
     if (++g.wd_ticks % (30000 / WATCHDOG_MS) == 0)
         log_stats_locked(1);
-    uint64_t p = atomic_load(&g.in_packets);
-    if (g.usb && p != g.wd_last) {
-        g.wd_last = p;
+    /* Every stream must move: a dead Input 2 or Line output is restarted too, not only Input 1. */
+    unsigned stalled = g.usb ? 0 : 0xf;
+    for (int i = 0; i < 4; i++)
+        if (atomic_load_explicit(&g.progress[i], memory_order_relaxed) == g.wd_last[i])
+            stalled |= 1u << i;
+    if (!stalled) {
+        wd_snapshot();
         g.wd_stall = 0;
     } else if (++g.wd_stall >= WATCHDOG_STALL_TICKS) {
         g.restarts++;
         if (gate_pass(&gate_watchdog, "no USB data"))
-            LOG("no USB data for %d ms, restarting (restart %u)", g.wd_stall * WATCHDOG_MS, g.restarts);
+            LOG("no USB data for %d ms (streams 0x%x: 1 = Line 1, 2 = Input 1, 4 = Line 2, 8 = Input 2), "
+                "restarting (restart %u)",
+                g.wd_stall * WATCHDOG_MS, stalled, g.restarts);
         usb_close_locked();
         usb_start_locked(1);
-        g.wd_last = atomic_load(&g.in_packets);
+        wd_snapshot();
         g.wd_stall = 0;
     }
     pthread_mutex_unlock(&g.lock);
@@ -922,12 +955,10 @@ static void fill_format(AudioStreamBasicDescription *f)
     f->mBitsPerChannel = 32;
 }
 
+/* Lock-free: the watchdog can hold g.lock for seconds while a hung SL1 is reopened. */
 static int device_visible(void)
 {
-    pthread_mutex_lock(&g.lock);
-    int p = g.present;
-    pthread_mutex_unlock(&g.lock);
-    return p;
+    return atomic_load(&g.present);
 }
 
 static int object_exists(AudioObjectID id)
@@ -1051,12 +1082,7 @@ static OSStatus get_prop(AudioObjectID obj, const AudioObjectPropertyAddress *a,
         }
         case kAudioDevicePropertyClockDomain: PUT(UInt32, 0);
         case kAudioDevicePropertyDeviceIsAlive: PUT(UInt32, (UInt32)present);
-        case kAudioDevicePropertyDeviceIsRunning: {
-            pthread_mutex_lock(&g.lock);
-            UInt32 r = g.io_clients > 0;
-            pthread_mutex_unlock(&g.lock);
-            PUT(UInt32, r);
-        }
+        case kAudioDevicePropertyDeviceIsRunning: PUT(UInt32, atomic_load(&g.io_clients) > 0);
         /* Never the system default: alerts and other apps' sound must not end up on the PA. */
         case kAudioDevicePropertyDeviceCanBeDefaultDevice: PUT(UInt32, 0);
         case kAudioDevicePropertyDeviceCanBeDefaultSystemDevice: PUT(UInt32, 0);
@@ -1107,12 +1133,7 @@ static OSStatus get_prop(AudioObjectID obj, const AudioObjectPropertyAddress *a,
         case kAudioObjectPropertyOwnedObjects: PUT_IDS(&obj, 0);
         case kAudioObjectPropertyName:
             PUT(CFStringRef, is_in ? CFSTR("Inputs 1+2") : CFSTR("Lines 1+2"));
-        case kAudioStreamPropertyIsActive: {
-            pthread_mutex_lock(&g.lock);
-            UInt32 r = g.stream_active[is_in ? 0 : 1];
-            pthread_mutex_unlock(&g.lock);
-            PUT(UInt32, r);
-        }
+        case kAudioStreamPropertyIsActive: PUT(UInt32, atomic_load(&g.stream_active[is_in ? 0 : 1]));
         case kAudioStreamPropertyDirection: PUT(UInt32, is_in ? 1 : 0);
         case kAudioStreamPropertyTerminalType:
             PUT(UInt32, is_in ? kAudioStreamTerminalTypeLine : kAudioStreamTerminalTypeLine);
@@ -1250,11 +1271,9 @@ static OSStatus drv_SetPropertyData(AudioServerPlugInDriverRef d, AudioObjectID 
     case kAudioStreamPropertyIsActive:
         if (obj != OBJ_STREAM_IN && obj != OBJ_STREAM_OUT)
             return kAudioHardwareUnknownPropertyError;
-        if (size < sizeof(UInt32))
+        if (!data || size < sizeof(UInt32))
             return kAudioHardwareBadPropertySizeError;
-        pthread_mutex_lock(&g.lock);
-        g.stream_active[obj == OBJ_STREAM_IN ? 0 : 1] = *(const UInt32 *)data != 0;
-        pthread_mutex_unlock(&g.lock);
+        atomic_store(&g.stream_active[obj == OBJ_STREAM_IN ? 0 : 1], *(const UInt32 *)data != 0);
         notify_changed(obj, kAudioStreamPropertyIsActive);
         return noErr;
     }
@@ -1279,7 +1298,7 @@ static OSStatus drv_StartIO(AudioServerPlugInDriverRef d, AudioObjectID dev, UIn
         atomic_store(&g.clock_valid, 0);
         if (!g.attached || usb_start_locked(0) != noErr)
             start_free_clock_locked();
-        g.wd_last = atomic_load(&g.in_packets);
+        wd_snapshot();
         g.wd_stall = 0;
     }
     if (r == noErr)
@@ -1363,15 +1382,18 @@ static OSStatus drv_DoIOOperation(AudioServerPlugInDriverRef d, AudioObjectID de
     if (op == kAudioServerPlugInIOOperationReadInput && stream == OBJ_STREAM_IN) {
         int64_t pos = (int64_t)ci->mInputTime.mSampleTime;
         int64_t written = (int64_t)atomic_load_explicit(&g.in_written, memory_order_acquire);
+        int64_t written_b = (int64_t)atomic_load_explicit(&g.b_written, memory_order_acquire);
         int64_t m = written - (pos + (int64_t)frames);
         track_min(&g.in_margin_min, &g.in_late, &g.in_late_last, m, pos);
         for (UInt32 i = 0; i < frames; i++, pos++) {
             /* Not yet received (unplugged, USB stalled) or already overwritten: silence,
-             * never old timecode from a previous lap of the ring. */
-            int fresh = pos >= 0 && pos < written && pos >= written - (RING_FRAMES - 1024);
+             * never old timecode from a previous lap of the ring. Each input has its own
+             * counter, so a lagging or dead Input 2 reads silence too. */
+            int fresh_a = pos >= 0 && pos < written && pos >= written - (RING_FRAMES - 1024);
+            int fresh_b = pos >= 0 && pos < written_b && pos >= written_b - (RING_FRAMES - 1024);
             const int16_t *src = &g.in_ring[((uint64_t)pos & RING_MASK) * CHANNELS];
             for (int c = 0; c < CHANNELS; c++)
-                buf[i * CHANNELS + (UInt32)c] = fresh ? src[c] * (1.0f / 32768.0f) : 0.0f;
+                buf[i * CHANNELS + (UInt32)c] = (c < 2 ? fresh_a : fresh_b) ? src[c] * (1.0f / 32768.0f) : 0.0f;
         }
     } else if (op == kAudioServerPlugInIOOperationWriteMix && stream == OBJ_STREAM_OUT) {
         int64_t pos = (int64_t)ci->mOutputTime.mSampleTime;

@@ -59,6 +59,7 @@ struct sl1_device {
     sl1_callbacks cb;        /* if set, used instead of the rings */
     stream streams[SL1_STREAM_COUNT];
     _Atomic int running;
+    int zombie; /* transfers still in flight after stop: never free this device */
 };
 
 static void set_err(char *err, size_t errlen, const char *fmt, ...)
@@ -208,6 +209,12 @@ static void slot_done(xfer_slot *slot, IOReturn status, IOUSBHostIsochronousTran
     sl1_device *dev = s->dev;
     size_t frame_bytes = (size_t)s->info->channels * SL1_BYTES_PER_SAMPLE;
     const unsigned char *base = slot->data.bytes;
+
+    /* After stop, a late completion must not feed old data into the client. */
+    if (!atomic_load(&dev->running)) {
+        atomic_fetch_sub(&s->in_flight, 1);
+        return;
+    }
 
     if (status != kIOReturnAborted && status != kIOReturnNotResponding) {
         for (int i = 0; i < dev->cfg.packets_per_transfer; i++) {
@@ -525,6 +532,12 @@ void sl1_stop(sl1_device *dev)
         stream *s = &dev->streams[i];
         if (!s->active)
             continue;
+        if (atomic_load(&s->in_flight) > 0) {
+            /* A completion may still arrive and use the slots: keep them (and the device) alive. */
+            trace("%s: %d transfers still in flight after stop", s->info->name, atomic_load(&s->in_flight));
+            dev->zombie = 1;
+            continue;
+        }
         for (int k = 0; s->slots && k < s->nslots; k++) {
             s->slots[k].data = nil;
             free(s->slots[k].tx);
@@ -545,6 +558,14 @@ void sl1_close(sl1_device *dev)
     if (!dev)
         return;
     sl1_stop(dev);
+    if (dev->zombie) {
+        /* Leak the device rather than free memory a pending completion still uses. */
+        for (int i = 0; i < SL1_STREAM_COUNT; i++)
+            [dev->streams[i].intf destroy];
+        [dev->usbdev destroy];
+        trace("close (device kept alive, transfers pending)");
+        return;
+    }
     for (int i = 0; i < SL1_STREAM_COUNT; i++) {
         stream *s = &dev->streams[i];
         [s->intf destroy];
