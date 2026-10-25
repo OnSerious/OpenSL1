@@ -221,8 +221,9 @@ Plug in the SL1, then in Mixxx open *Preferences → Sound Hardware* and click *
 <details>
 <summary><b>Mixxx 2.6 beta freezes when I apply sound settings</b></summary>
 
-That's a bug inside the Mixxx beta, not the driver (the driver keeps running). Force-quit and restart Mixxx, and set up
-sound before your set – or use a stable Mixxx release.
+Seen with Mixxx 2.6.0-beta and the SL1 (not with the Mac's built-in audio): the freeze is a deadlock between two
+Mixxx threads while it stops the stream; the driver keeps running. We are still narrowing down the trigger. Until
+then: force-quit and restart Mixxx, and set up sound before your set.
 </details>
 
 <details>

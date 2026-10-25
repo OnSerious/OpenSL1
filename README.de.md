@@ -222,8 +222,9 @@ SL1 anstecken, dann in Mixxx *Einstellungen → Soundhardware* öffnen und **Anw
 <details>
 <summary><b>Mixxx 2.6 Beta friert beim Übernehmen der Soundeinstellungen ein</b></summary>
 
-Das ist ein Fehler in der Mixxx-Beta, nicht im Treiber (der läuft weiter). Mixxx sofort beenden, neu starten und den
-Sound vor dem Set einrichten – oder eine stabile Mixxx-Version nutzen.
+Tritt mit Mixxx 2.6.0-beta und der SL1 auf (nicht mit dem eingebauten Mac-Audio): Zwei Mixxx-Threads blockieren sich
+beim Stoppen des Streams gegenseitig; der Treiber läuft weiter. Den genauen Auslöser grenzen wir noch ein. Bis dahin:
+Mixxx sofort beenden, neu starten und den Sound vor dem Set einrichten.
 </details>
 
 <details>
