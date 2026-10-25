@@ -10,7 +10,13 @@ All notable changes to OpenSL1. Format inspired by [Keep a Changelog](https://ke
 
 ---
 
-## 🛠️ Unreleased
+## 🚀 [0.1.2](https://github.com/OnSerious/OpenSL1/releases/tag/v0.1.2) – 2026-10-25
+
+**Clearer installer, ruhigeres Log – no change to the sound.**
+
+- **Installer pages (English and German):** unofficial / use-at-your-own-risk notice, which DJ software works, why the
+  installer is not notarized, power and charger notes (including the untested idea of the SL1's 9 V supply jack), and
+  Mixxx setup tips.
 
 - **Quieter log while the SL1 hangs:** a repeated failure (open, start, watchdog restart) is logged at most once
   every 10 s; when the SL1 is back, the driver reports how many repeats it suppressed.

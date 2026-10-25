@@ -114,7 +114,7 @@ them to macOS as a CoreAudio device. The audio clock comes from the SL1 itself, 
 
 ## 📦 Installation
 
-1. Download **`OpenSL1-0.1.1.pkg`** from the [latest release](https://github.com/OnSerious/OpenSL1/releases/latest).
+1. Download **`OpenSL1-0.1.2.pkg`** from the [latest release](https://github.com/OnSerious/OpenSL1/releases/latest).
 2. Double-click it and follow the installer.
 3. Plug in the SL1 – done. It appears as **“Rane SL1”** in *Audio MIDI Setup* and in Mixxx.
 
@@ -126,7 +126,7 @@ them to macOS as a CoreAudio device. The audio clock comes from the SL1 itself, 
 <details>
 <summary><b>🗑️ Uninstall</b></summary>
 
-Open **`OpenSL1-Uninstall-0.1.1.pkg`** from the same release. That's it.
+Open **`OpenSL1-Uninstall-0.1.2.pkg`** from the same release. That's it.
 </details>
 
 ## Mixxx setup

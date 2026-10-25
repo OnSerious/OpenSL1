@@ -115,7 +115,7 @@ macOS als CoreAudio-Gerät bereit. Der Takt kommt von der SL1 selbst – nichts 
 
 ## 📦 Installation
 
-1. **`OpenSL1-0.1.1.pkg`** vom [aktuellen Release](https://github.com/OnSerious/OpenSL1/releases/latest) laden.
+1. **`OpenSL1-0.1.2.pkg`** vom [aktuellen Release](https://github.com/OnSerious/OpenSL1/releases/latest) laden.
 2. Doppelklicken und dem Installer folgen.
 3. SL1 anstecken – fertig. Sie erscheint als **„Rane SL1“** im *Audio-MIDI-Setup* und in Mixxx.
 
@@ -127,7 +127,7 @@ macOS als CoreAudio-Gerät bereit. Der Takt kommt von der SL1 selbst – nichts 
 <details>
 <summary><b>🗑️ Deinstallieren</b></summary>
 
-**`OpenSL1-Uninstall-0.1.1.pkg`** aus demselben Release öffnen. Das war's.
+**`OpenSL1-Uninstall-0.1.2.pkg`** aus demselben Release öffnen. Das war's.
 </details>
 
 ## Mixxx einrichten
