@@ -13,7 +13,7 @@
 ### [⬇️ Installer herunterladen](https://github.com/OnSerious/OpenSL1/releases/latest)
 
 
-<a href="https://ko-fi.com/OnSerious"><img alt="Auf Ko-fi unterstützen" src="https://img.shields.io/badge/Ko--fi-Auf%20Ko-fi%20unterstützen-ff5e5b?style=for-the-badge&logo=ko-fi&logoColor=white"></a>
+<a href="https://ko-fi.com/OnSerious"><img alt="Auf Ko-fi unterstützen" src="https://img.shields.io/badge/Ko--fi-Unterst%C3%BCtze%20mich-ff5e5b?style=for-the-badge&logo=ko-fi&logoColor=white"></a>
 
 </div>
 
