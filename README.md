@@ -133,12 +133,17 @@ Open **`OpenSL1-Uninstall-0.1.1.pkg`** from the same release. That's it.
 | Where | Setting |
 |---|---|
 | macOS asks “Mixxx would like to access the microphone” | **Allow** – otherwise no timecode reaches Mixxx |
-| Preferences → Sound Hardware | **CoreAudio**, **44100 Hz**, buffer **5.8 ms** |
+| Preferences → Sound Hardware | **CoreAudio**, **44100 Hz**, buffer **5.8 ms** (2.9 ms possible, see below) |
 | Output: Deck 1 / Deck 2 | “Rane SL1” channels **1–2** / **3–4** |
 | Output: Main, Headphones | **None** – your DJ mixer does that |
 | Input: Vinyl Control 1 / 2 | “Rane SL1” channels **1–2** / **3–4** |
 | Preferences → Vinyl Control | **Serato CV02 Vinyl, Side A**, 33⅓ RPM, mode **REL** |
 | Vinyl Control → filter | **Alpha-beta** for scratching |
+
+> [!TIP]
+> **Buffer: 5.8 ms is the safe default.** 2.9 ms ran without a single error on a MacBook Air M4 (455 258
+> packets, 0 late accesses), but with a much smaller safety margin. Other Macs, heavy CPU load or other Mixxx versions
+> may crackle at 2.9 ms – test it before a gig.
 
 > [!TIP]
 > **Alpha-beta beats Kalman for scratching.** With the Kalman filter the track keeps running in slow motion for a
