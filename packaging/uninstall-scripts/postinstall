@@ -1,0 +1,9 @@
+#!/bin/sh
+# OpenSL1 uninstaller (payload-free package): remove the driver, restart audio.
+# SPDX-License-Identifier: GPL-3.0-or-later
+rm -rf "$3/Library/Audio/Plug-Ins/HAL/OpenSL1.driver"
+pkgutil --volume "$3" --forget org.opensl1.driver >/dev/null 2>&1 || true
+if [ "$3" = "/" ]; then
+    killall coreaudiod 2>/dev/null || true
+fi
+exit 0

@@ -1,0 +1,7 @@
+#!/bin/sh
+# OpenSL1 installer: restart the audio server so it loads the driver.
+# SPDX-License-Identifier: GPL-3.0-or-later
+if [ "$3" = "/" ]; then
+    killall coreaudiod 2>/dev/null || true
+fi
+exit 0

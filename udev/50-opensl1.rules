@@ -1,0 +1,4 @@
+# OpenSL1: lets members of the "audio" group and the logged-in user open the
+# Rane SL1 with libusb (needed by sl1rec/sl1tone; Mixxx via ALSA does not need it).
+# Install: sudo cp udev/50-opensl1.rules /etc/udev/rules.d/ && sudo udevadm control --reload && sudo udevadm trigger
+SUBSYSTEM=="usb", ATTR{idVendor}=="13e5", ATTR{idProduct}=="0001", MODE="0660", GROUP="audio", TAG+="uaccess"

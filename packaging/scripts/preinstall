@@ -1,0 +1,5 @@
+#!/bin/sh
+# OpenSL1 installer: remove an older copy so no stale files survive the update.
+# SPDX-License-Identifier: GPL-3.0-or-later
+rm -rf "$3/Library/Audio/Plug-Ins/HAL/OpenSL1.driver"
+exit 0

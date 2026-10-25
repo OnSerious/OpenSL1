@@ -1,0 +1,9 @@
+# Build output (tools, driver bundle, installer packages)
+build/
+
+# Test recordings
+*.wav
+*.f32
+
+# macOS
+.DS_Store

@@ -1,0 +1,30 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+name: build
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: sudo apt-get update && sudo apt-get install -y libusb-1.0-0-dev pkg-config
+      - run: make
+      - run: make test
+
+  macos:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: brew install libusb pkg-config
+      - run: make
+      - run: make test
+      - run: make driver pkg
+      - uses: actions/upload-artifact@v4
+        with:
+          name: OpenSL1-macOS
+          path: |
+            build/OpenSL1-*.pkg
+            !build/*-component.pkg

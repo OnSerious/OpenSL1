@@ -1,0 +1,275 @@
+Couldn't open device, some information will be missing
+
+Bus 002 Device 002: ID 13e5:0001 Rane SL-1
+Negotiated speed: Full Speed (12Mbps)
+Device Descriptor:
+  bLength                18
+  bDescriptorType         1
+  bcdUSB               1.00
+  bDeviceClass          255 Vendor Specific Class
+  bDeviceSubClass       255 Vendor Specific Subclass
+  bDeviceProtocol       255 Vendor Specific Protocol
+  bMaxPacketSize0        32
+  idVendor           0x13e5 Rane
+  idProduct          0x0001 SL-1
+  bcdDevice            1.00
+  iManufacturer           1 Serato
+  iProduct                2 Serato Scratch LIVE(c)2004
+  iSerial                 0 
+  bNumConfigurations      1
+  Configuration Descriptor:
+    bLength                 9
+    bDescriptorType         2
+    wTotalLength       0x01f1
+    bNumInterfaces          9
+    bConfigurationValue     1
+    iConfiguration         13 
+    bmAttributes         0x80
+      (Bus Powered)
+    MaxPower              300mA
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        0
+      bAlternateSetting       0
+      bNumEndpoints           0
+      bInterfaceClass       255 Vendor Specific Class
+      bInterfaceSubClass      1 [unknown]
+      bInterfaceProtocol      0 
+      iInterface             15 
+      ** UNRECOGNIZED:  0a 24 01 00 01 3e 00 02 02 01
+      ** UNRECOGNIZED:  0c 24 02 03 03 06 00 02 03 00 00 00
+      ** UNRECOGNIZED:  0a 24 06 04 03 01 02 00 00 00
+      ** UNRECOGNIZED:  09 24 03 05 01 01 00 04 00
+      ** UNRECOGNIZED:  0c 24 02 01 01 01 00 02 03 00 00 00
+      ** UNRECOGNIZED:  09 24 03 02 01 03 00 01 00
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        1
+      bAlternateSetting       0
+      bNumEndpoints           0
+      bInterfaceClass       255 Vendor Specific Class
+      bInterfaceSubClass      2 [unknown]
+      bInterfaceProtocol      0 
+      iInterface              7 
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        1
+      bAlternateSetting       1
+      bNumEndpoints           1
+      bInterfaceClass       255 Vendor Specific Class
+      bInterfaceSubClass      2 [unknown]
+      bInterfaceProtocol      0 
+      iInterface              9 
+      ** UNRECOGNIZED:  07 24 01 01 01 01 00
+      ** UNRECOGNIZED:  0e 24 02 01 02 02 10 02 00 7d 00 44 ac 00
+      Endpoint Descriptor:
+        bLength                 9
+        bDescriptorType         5
+        bEndpointAddress     0x01  EP 1 OUT
+        bmAttributes            9
+          Transfer Type            Isochronous
+          Synch Type               Adaptive
+          Usage Type               Data
+        wMaxPacketSize     0x00b8  1x 184 bytes
+        bInterval               1
+        bRefresh                0
+        bSynchAddress           0
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        2
+      bAlternateSetting       0
+      bNumEndpoints           0
+      bInterfaceClass       255 Vendor Specific Class
+      bInterfaceSubClass      2 [unknown]
+      bInterfaceProtocol      0 
+      iInterface              3 
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        2
+      bAlternateSetting       1
+      bNumEndpoints           1
+      bInterfaceClass       255 Vendor Specific Class
+      bInterfaceSubClass      2 [unknown]
+      bInterfaceProtocol      0 
+      iInterface              5 
+      ** UNRECOGNIZED:  07 24 01 05 01 01 00
+      ** UNRECOGNIZED:  0e 24 02 01 02 02 10 02 00 7d 00 44 ac 00
+      Endpoint Descriptor:
+        bLength                 9
+        bDescriptorType         5
+        bEndpointAddress     0x82  EP 2 IN
+        bmAttributes            9
+          Transfer Type            Isochronous
+          Synch Type               Adaptive
+          Usage Type               Data
+        wMaxPacketSize     0x00b8  1x 184 bytes
+        bInterval               1
+        bRefresh                0
+        bSynchAddress           0
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        3
+      bAlternateSetting       0
+      bNumEndpoints           0
+      bInterfaceClass       255 Vendor Specific Class
+      bInterfaceSubClass      1 [unknown]
+      bInterfaceProtocol      0 
+      iInterface             16 
+      ** UNRECOGNIZED:  0a 24 01 00 01 3e 00 02 05 04
+      ** UNRECOGNIZED:  0c 24 02 08 03 06 00 02 03 00 00 00
+      ** UNRECOGNIZED:  0a 24 06 09 08 01 02 00 00 00
+      ** UNRECOGNIZED:  09 24 03 0a 01 01 00 09 00
+      ** UNRECOGNIZED:  0c 24 02 06 01 01 00 02 03 00 00 00
+      ** UNRECOGNIZED:  09 24 03 07 01 03 00 06 00
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        4
+      bAlternateSetting       0
+      bNumEndpoints           0
+      bInterfaceClass       255 Vendor Specific Class
+      bInterfaceSubClass      2 [unknown]
+      bInterfaceProtocol      0 
+      iInterface              8 
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        4
+      bAlternateSetting       1
+      bNumEndpoints           1
+      bInterfaceClass       255 Vendor Specific Class
+      bInterfaceSubClass      2 [unknown]
+      bInterfaceProtocol      0 
+      iInterface             10 
+      ** UNRECOGNIZED:  07 24 01 06 01 01 00
+      ** UNRECOGNIZED:  0e 24 02 01 02 02 10 02 00 7d 00 44 ac 00
+      Endpoint Descriptor:
+        bLength                 9
+        bDescriptorType         5
+        bEndpointAddress     0x04  EP 4 OUT
+        bmAttributes            9
+          Transfer Type            Isochronous
+          Synch Type               Adaptive
+          Usage Type               Data
+        wMaxPacketSize     0x00b8  1x 184 bytes
+        bInterval               1
+        bRefresh                0
+        bSynchAddress           0
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        5
+      bAlternateSetting       0
+      bNumEndpoints           0
+      bInterfaceClass       255 Vendor Specific Class
+      bInterfaceSubClass      2 [unknown]
+      bInterfaceProtocol      0 
+      iInterface              4 
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        5
+      bAlternateSetting       1
+      bNumEndpoints           1
+      bInterfaceClass       255 Vendor Specific Class
+      bInterfaceSubClass      2 [unknown]
+      bInterfaceProtocol      0 
+      iInterface              6 
+      ** UNRECOGNIZED:  07 24 01 0a 01 01 00
+      ** UNRECOGNIZED:  0e 24 02 01 02 02 10 02 00 7d 00 44 ac 00
+      Endpoint Descriptor:
+        bLength                 9
+        bDescriptorType         5
+        bEndpointAddress     0x84  EP 4 IN
+        bmAttributes            9
+          Transfer Type            Isochronous
+          Synch Type               Adaptive
+          Usage Type               Data
+        wMaxPacketSize     0x00b8  1x 184 bytes
+        bInterval               1
+        bRefresh                0
+        bSynchAddress           0
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        6
+      bAlternateSetting       0
+      bNumEndpoints           0
+      bInterfaceClass       255 Vendor Specific Class
+      bInterfaceSubClass      1 [unknown]
+      bInterfaceProtocol      0 
+      iInterface             17 
+      ** UNRECOGNIZED:  09 24 01 00 01 1e 00 01 07
+      ** UNRECOGNIZED:  0c 24 02 0b 03 06 00 01 00 00 00 00
+      ** UNRECOGNIZED:  09 24 03 0c 01 01 00 0b 00
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        7
+      bAlternateSetting       0
+      bNumEndpoints           0
+      bInterfaceClass       255 Vendor Specific Class
+      bInterfaceSubClass      2 [unknown]
+      bInterfaceProtocol      0 
+      iInterface             11 
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        7
+      bAlternateSetting       1
+      bNumEndpoints           1
+      bInterfaceClass       255 Vendor Specific Class
+      bInterfaceSubClass      2 [unknown]
+      bInterfaceProtocol      0 
+      iInterface             12 
+      ** UNRECOGNIZED:  07 24 01 0c 01 01 00
+      ** UNRECOGNIZED:  0e 24 02 01 01 02 10 02 00 7d 00 44 ac 00
+      Endpoint Descriptor:
+        bLength                 9
+        bDescriptorType         5
+        bEndpointAddress     0x85  EP 5 IN
+        bmAttributes            9
+          Transfer Type            Isochronous
+          Synch Type               Adaptive
+          Usage Type               Data
+        wMaxPacketSize     0x0090  1x 144 bytes
+        bInterval               1
+        bRefresh                0
+        bSynchAddress           0
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        8
+      bAlternateSetting       0
+      bNumEndpoints           2
+      bInterfaceClass       255 Vendor Specific Class
+      bInterfaceSubClass      0 [unknown]
+      bInterfaceProtocol      0 
+      iInterface              0 
+      ** UNRECOGNIZED:  09 21 00 01 00 01 22 1c 00
+      Endpoint Descriptor:
+        bLength                 7
+        bDescriptorType         5
+        bEndpointAddress     0x83  EP 3 IN
+        bmAttributes            3
+          Transfer Type            Interrupt
+          Synch Type               None
+          Usage Type               Data
+        wMaxPacketSize     0x0040  1x 64 bytes
+        bInterval               4
+      Endpoint Descriptor:
+        bLength                 7
+        bDescriptorType         5
+        bEndpointAddress     0x03  EP 3 OUT
+        bmAttributes            3
+          Transfer Type            Interrupt
+          Synch Type               None
+          Usage Type               Data
+        wMaxPacketSize     0x0040  1x 64 bytes
+        bInterval               4

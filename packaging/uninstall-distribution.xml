@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<installer-gui-script minSpecVersion="2">
+    <title>Remove OpenSL1</title>
+    <welcome file="uninstall-welcome.html" mime-type="text/html"/>
+    <options customize="never" require-scripts="true" rootVolumeOnly="true"/>
+    <choices-outline>
+        <line choice="default"/>
+    </choices-outline>
+    <choice id="default" title="Remove OpenSL1">
+        <pkg-ref id="org.opensl1.uninstall"/>
+    </choice>
+    <pkg-ref id="org.opensl1.uninstall" version="@VERSION@" onConclusion="none">OpenSL1-Uninstall-component.pkg</pkg-ref>
+</installer-gui-script>
