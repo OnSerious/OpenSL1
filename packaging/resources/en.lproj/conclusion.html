@@ -5,8 +5,10 @@
 <ul>
 <li>Buffer: <b>5.8 ms</b> is the safe default. 2.9 ms worked on one test Mac, but with less safety margin.</li>
 <li>Set Main and Headphones to <b>None</b> – use the SL1 as your only sound card in Mixxx.</li>
-<li>Plug the Mac’s charger in <b>before</b> the set and test your setup before a gig.</li>
+<li>Test your setup before a gig.</li>
 </ul>
+<p><b>Power and the Mac’s charger:</b> the SL1 takes its power from USB (300 mA). When the Mac switches between charger and battery (charger plugged in or out), the SL1 can briefly drop off USB. In our tests the driver usually brought it back within about 3 seconds; occasionally the SL1 hung and only unplugging and replugging helped. So: <b>plug the charger in before the set and leave it alone.</b></p>
+<p>Ideas that might help – <b>all untested, no promise</b>: the SL1 has an optional 9 V power-supply jack; with it the box would not depend on the Mac’s USB power, which probably helps, but we cannot promise it. A direct USB-C to USB-B cable instead of an adapter, or a powered USB hub, may also help. A macOS power or USB setting might play a role too; we have not checked (Low Power Mode was off in our tests).</p>
 <p>Problems or questions? Open an issue at github.com/OnSerious/OpenSL1. If OpenSL1 helped you, a coffee is welcome:
 ko-fi.com/OnSerious (voluntary, no purchase, no claim to support).</p>
 <p>To remove the driver, open the <b>“OpenSL1-Uninstall”</b> package, or run <code>sudo packaging/uninstall.sh</code>

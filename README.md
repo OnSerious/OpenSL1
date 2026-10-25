@@ -257,7 +257,10 @@ Check the cable, then restart the audio service in Terminal: `sudo killall corea
 
 The SL1 gets its power over USB and can briefly drop off when the Mac switches between charger and battery. The driver
 usually recovers within about 3 seconds. Occasionally the SL1 hangs – unplug it and plug it back in, Mixxx can keep
-running. Best practice: plug the charger in before the set. Details in
+running. Best practice: plug the charger in before the set. Ideas that might help, all **untested** and without promise: the SL1's
+optional 9 V power-supply jack (the box would then not depend on the Mac's USB power – probably helps, but we can't
+promise it), a direct USB-C to USB-B cable instead of an adapter, or a powered USB hub. A macOS power setting might
+play a role too – not checked. Details in
 [docs/MACOS.md](docs/MACOS.md#known-issue-the-sl1-drops-off-usb-when-the-macs-power-source-changes).
 </details>
 
@@ -274,6 +277,22 @@ starts normally (silent). Plug in the SL1 – the sound comes within a second, n
 Seen with Mixxx 2.6.0-beta and the SL1 (not with the Mac's built-in audio): the freeze is a deadlock between two
 Mixxx threads while it stops the stream; the driver keeps running. We are still narrowing down the trigger. Until
 then: force-quit and restart Mixxx, and set up sound before your set.
+</details>
+
+<details>
+<summary><b>Something stopped working after a macOS update</b></summary>
+
+OpenSL1 is an audio plug-in, not a kernel extension, so a driver problem normally means “Rane SL1” disappears or audio
+drops out – not that the Mac fails to boot. We cannot promise that every future macOS version works. If it breaks:
+
+1. Unplug the SL1.
+2. Open **`OpenSL1-Uninstall-<version>.pkg`** from the release – or in Terminal:
+   `sudo rm -rf /Library/Audio/Plug-Ins/HAL/OpenSL1.driver` and `sudo killall coreaudiod`.
+3. Check the [releases](https://github.com/OnSerious/OpenSL1/releases) for a newer version, or open an issue with your macOS version.
+
+If a Mac ever panics or will not start normally, start it without the SL1 and remove the driver as above. In the worst
+case, start into macOS Recovery and delete `OpenSL1.driver` in `Library/Audio/Plug-Ins/HAL` on the system disk (exact
+path in Recovery not verified). Make a Time Machine backup before big macOS updates, and test before a gig.
 </details>
 
 <details>

@@ -258,7 +258,10 @@ Kabel prüfen, dann im Terminal den Audiodienst neu starten: `sudo killall corea
 
 Die SL1 bekommt ihren Strom über USB und kann kurz abfallen, wenn der Mac zwischen Netzteil und Akku wechselt. Meist
 fängt der Treiber das in etwa 3 Sekunden ab. Selten hängt die SL1 – dann ab- und wieder anstecken, Mixxx kann
-weiterlaufen. Am besten: Ladekabel vor dem Set einstecken. Details in
+weiterlaufen. Am besten: Ladekabel vor dem Set einstecken. Ideen, die helfen könnten, alle **ungetestet** und ohne Versprechen: die
+optionale 9-V-Netzteilbuchse der SL1 (die Box wäre dann nicht mehr vom USB-Strom des Macs abhängig – hilft
+wahrscheinlich, aber wir können es nicht versprechen), ein direktes USB-C-auf-USB-B-Kabel statt eines Adapters oder ein
+aktiver USB-Hub. Möglicherweise spielt auch eine Energieeinstellung in macOS eine Rolle – nicht geprüft. Details in
 [docs/MACOS.md](docs/MACOS.md#known-issue-the-sl1-drops-off-usb-when-the-macs-power-source-changes).
 </details>
 
@@ -275,6 +278,24 @@ startet normal (still). SL1 einstecken – der Ton kommt innerhalb einer Sekunde
 Tritt mit Mixxx 2.6.0-beta und der SL1 auf (nicht mit dem eingebauten Mac-Audio): Zwei Mixxx-Threads blockieren sich
 beim Stoppen des Streams gegenseitig; der Treiber läuft weiter. Den genauen Auslöser grenzen wir noch ein. Bis dahin:
 Mixxx sofort beenden, neu starten und den Sound vor dem Set einrichten.
+</details>
+
+<details>
+<summary><b>Nach einem macOS-Update funktioniert etwas nicht mehr</b></summary>
+
+OpenSL1 ist ein Audio-Plug-in und keine Kernel-Erweiterung. Ein Treiberproblem bedeutet normalerweise, dass „Rane SL1“
+verschwindet oder der Ton aussetzt – nicht, dass der Mac nicht mehr startet. Wir können nicht versprechen, dass jede
+künftige macOS-Version funktioniert. Wenn etwas kaputtgeht:
+
+1. SL1 abziehen.
+2. **`OpenSL1-Uninstall-<Version>.pkg`** aus dem Release öffnen – oder im Terminal:
+   `sudo rm -rf /Library/Audio/Plug-Ins/HAL/OpenSL1.driver` und `sudo killall coreaudiod`.
+3. In den [Releases](https://github.com/OnSerious/OpenSL1/releases) nach einer neueren Version sehen oder ein Issue mit deiner macOS-Version eröffnen.
+
+Stürzt ein Mac je ab oder startet nicht normal, starte ihn ohne SL1 und entferne den Treiber wie oben. Im schlimmsten
+Fall startest du in die macOS-Wiederherstellung und löschst `OpenSL1.driver` unter `Library/Audio/Plug-Ins/HAL` auf der
+Systemfestplatte (genauer Pfad in der Wiederherstellung nicht geprüft). Mach vor großen macOS-Updates ein
+Time-Machine-Backup und teste vor einem Gig.
 </details>
 
 <details>

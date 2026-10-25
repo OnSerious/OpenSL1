@@ -154,6 +154,7 @@ unconfirmed.
 - [ ] Plug the charger in before the set and do not touch it during the set
 - [ ] Prefer a direct USB-C to USB-B cable over a USB-A to USB-C adapter (one contact less – untested)
 - [ ] A powered USB hub between the Mac and the SL1 may isolate it from the port's power changes (untested)
+- [ ] The SL1's optional 9 V supply jack should make the box independent of the Mac's USB power and probably avoids the drop-outs – untested, no promise
 
 ## Known issue: libusb causes a kernel panic
 
