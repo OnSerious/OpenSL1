@@ -155,6 +155,19 @@ Open **`OpenSL1-Uninstall-0.1.2.pkg`** from the same release. That's it.
 > **Use the SL1 as your only sound card in Mixxx.** If Main or Headphones go to the Mac's speakers or another
 > interface, Mixxx has to sync two clocks – that can cause crackles and skips.
 
+<details>
+<summary><b>📸 Screenshots: my Mixxx settings with the Rane SL1</b></summary>
+
+Mixxx 2.6.0-beta on a MacBook Air M4. The buffer here is 2.9 ms – it works on this Mac, but 5.8 ms is the safe
+default (see above).
+
+![Mixxx Sound Hardware outputs: Deck 1 to Rane SL1 channels 1-2, Deck 2 to channels 3-4, Main and Headphones none](docs/images/mixxx-rane-sl1-sound-hardware-outputs.png)
+
+![Mixxx Sound Hardware inputs: Core Audio, 44100 Hz, Vinyl Control 1 and 2 on Rane SL1 channels 1-2 and 3-4](docs/images/mixxx-rane-sl1-sound-hardware-inputs.png)
+
+![Mixxx Vinyl Control: Serato CV02 Vinyl Side A, 33.3 RPM, lead-in 28 s, Alpha-Beta filter on decks 1 and 2](docs/images/mixxx-rane-sl1-vinyl-control-serato-cv02.png)
+</details>
+
 ## 🎤 Gig checklist
 
 - [ ] Plug the Mac's charger in **before** the set – and don't touch it during the set
@@ -216,6 +229,17 @@ The SL1 is a normal CoreAudio device, so other apps can use it as a sound card. 
 plays to Line 1/2 and survives changing its audio settings; its timecode (DVS) feature needs a paid VirtualDJ licence
 and has not been tested yet. VirtualDJ has its own control vinyl and, according to community reports, also reads Serato
 CV02. Timecode control is tested with Mixxx.
+
+<details>
+<summary><b>📸 Screenshots: the Rane SL1 in VirtualDJ</b></summary>
+
+VirtualDJ (macOS) with the SL1 as sound card. The timecode settings accept Serato side A, but without a licence
+VirtualDJ shows “Timecode: License needed” – timecode was not tested.
+
+![VirtualDJ Audio Settings: separate decks, deck 1 and 2 on Rane SL1 chan 1 & 2 and 3 & 4, timecode inputs on the same channels](docs/images/virtualdj-rane-sl1-audio-settings.png)
+
+![VirtualDJ Timecode Settings: relative mode, Serato side A selected for timecode 1 and 2](docs/images/virtualdj-rane-sl1-timecode-settings.png)
+</details>
 </details>
 
 <details>

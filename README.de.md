@@ -155,6 +155,19 @@ macOS als CoreAudio-Gerät bereit. Der Takt kommt von der SL1 selbst – nichts 
 > **Die SL1 als einzige Soundkarte in Mixxx nutzen.** Gehen Main oder Kopfhörer auf die Mac-Lautsprecher oder ein
 > anderes Interface, muss Mixxx zwei Uhren abgleichen – das kann knacken und springen.
 
+<details>
+<summary><b>📸 Screenshots: meine Mixxx-Einstellungen mit der Rane SL1</b></summary>
+
+Mixxx 2.6.0-beta auf einem MacBook Air M4. Der Puffer steht hier auf 2,9 ms – das läuft auf diesem Mac, der sichere
+Standard ist aber 5,8 ms (siehe oben).
+
+![Mixxx Soundhardware Ausgänge: Deck 1 auf Rane SL1 Kanäle 1-2, Deck 2 auf Kanäle 3-4, Main und Kopfhörer keine](docs/images/mixxx-rane-sl1-sound-hardware-outputs.png)
+
+![Mixxx Soundhardware Eingänge: Core Audio, 44100 Hz, Vinyl Control 1 und 2 auf Rane SL1 Kanäle 1-2 und 3-4](docs/images/mixxx-rane-sl1-sound-hardware-inputs.png)
+
+![Mixxx Vinyl-Steuerung: Serato CV02 Vinyl Side A, 33,3 RPM, Vorlauf 28 s, Alpha-Beta-Filter auf Deck 1 und 2](docs/images/mixxx-rane-sl1-vinyl-control-serato-cv02.png)
+</details>
+
 ## 🎤 Checkliste für Auftritte
 
 - [ ] Ladekabel des Macs **vor** dem Set einstecken – und während des Sets nicht anfassen
@@ -216,6 +229,17 @@ Die SL1 ist ein normales CoreAudio-Gerät, andere Programme können sie also als
 öffnet sie, spielt auf Line 1/2 und übersteht Änderungen der Audio-Einstellungen; die Timecode-Steuerung (DVS) braucht
 dort eine kostenpflichtige VirtualDJ-Lizenz und ist noch ungetestet. VirtualDJ hat eigene Control-Vinyl und liest laut Berichten aus der Community auch Serato CV02. Timecode-Steuerung
 ist mit Mixxx getestet.
+
+<details>
+<summary><b>📸 Screenshots: die Rane SL1 in VirtualDJ</b></summary>
+
+VirtualDJ (macOS) mit der SL1 als Soundkarte. Die Timecode-Einstellungen nehmen Serato Side A an, ohne Lizenz zeigt
+VirtualDJ aber „Timecode: License needed“ – Timecode wurde nicht getestet.
+
+![VirtualDJ Audio-Einstellungen: getrennte Decks, Deck 1 und 2 auf Rane SL1 Kanal 1 & 2 und 3 & 4, Timecode-Eingänge auf denselben Kanälen](docs/images/virtualdj-rane-sl1-audio-settings.png)
+
+![VirtualDJ Timecode-Einstellungen: Modus relativ, Serato Side A für Timecode 1 und 2](docs/images/virtualdj-rane-sl1-timecode-settings.png)
+</details>
 </details>
 
 <details>
