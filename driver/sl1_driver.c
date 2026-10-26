@@ -220,6 +220,8 @@ static struct {
     double resume_sample, resume_host, resume_per_tick;
     /* Test hook (hal_harness only): OPENSL1_TEST_STALL=<n> ignores Input 1 for 500 packets from packet n. */
     uint64_t test_stall_at;
+    /* Test hook (hal_harness only): OPENSL1_TEST_STALL_B=<n> does the same for Input 2 alone. */
+    uint64_t test_stall_b_at;
     /* Test hook (hal_harness only): OPENSL1_TEST_OPEN_FAIL=<n> makes the first n opens fail. */
     unsigned test_open_fail;
     int power_token;
@@ -430,6 +432,11 @@ static void on_in(void *ctx, sl1_stream_id id, const int16_t *data, unsigned fra
         if (++g.meter[0].packets >= METER_PACKETS)
             meter_log_and_reset();
     } else if (id == SL1_STREAM_B_IN) {
+        if (g.test_stall_b_at) {
+            static uint64_t seen_b;
+            if (++seen_b >= g.test_stall_b_at && seen_b < g.test_stall_b_at + 500)
+                return;
+        }
         atomic_fetch_add_explicit(&g.progress[SL1_STREAM_B_IN], 1, memory_order_relaxed);
         if (!g.a_started)
             return;
@@ -889,6 +896,9 @@ static OSStatus drv_Initialize(AudioServerPlugInDriverRef d, AudioServerPlugInHo
     const char *stall = getenv("OPENSL1_TEST_STALL");
     if (stall)
         g.test_stall_at = strtoull(stall, NULL, 10);
+    const char *stall_b = getenv("OPENSL1_TEST_STALL_B");
+    if (stall_b)
+        g.test_stall_b_at = strtoull(stall_b, NULL, 10);
     const char *open_fail = getenv("OPENSL1_TEST_OPEN_FAIL");
     if (open_fail)
         g.test_open_fail = (unsigned)strtoul(open_fail, NULL, 10);

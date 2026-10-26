@@ -76,6 +76,7 @@ The tools print statistics at the end (packets, frames per packet, errors, over-
 | Variable | Used by | Effect |
 |---|---|---|
 | `OPENSL1_TEST_STALL=<packet>` | `hal_harness` | ignores Input 1 for 500 packets from that packet on → exercises the watchdog |
+| `OPENSL1_TEST_STALL_B=<packet>` | `hal_harness` | the same for Input 2 alone → Input 2 must read silence (not old data) and the watchdog must restart |
 | `OPENSL1_TEST_RESET=<n>` | `hal_harness` | the n-th open treats the interfaces as missing → exercises the bus reset |
 | `OPENSL1_TEST_OPEN_FAIL=<n>` | `hal_harness` | the first n opens fail → exercises the free-running clock, the watchdog retries and the log throttling |
 | `OPENSL1_TRACE=<file>` | tools | writes every USB setup step with `fsync`, so the last step survives a kernel panic |

@@ -95,14 +95,22 @@ static UInt32 get_u32(AudioObjectID obj, AudioObjectPropertySelector sel, AudioO
 int main(int argc, char **argv)
 {
     double seconds = 10, tone_db = -20;
+    FILE *raw = NULL;
     int opt;
-    while ((opt = getopt(argc, argv, "d:t:")) != -1) {
+    while ((opt = getopt(argc, argv, "d:t:r:")) != -1) {
         if (opt == 'd')
             seconds = atof(optarg);
         else if (opt == 't')
             tone_db = atof(optarg);
-        else {
-            fprintf(stderr, "usage: %s [-d seconds] [-t tone_dBFS] [OpenSL1.driver]\n", argv[0]);
+        else if (opt == 'r') {
+            raw = fopen(optarg, "wb");
+            if (!raw) {
+                perror(optarg);
+                return 2;
+            }
+        } else {
+            fprintf(stderr, "usage: %s [-d seconds] [-t tone_dBFS] [-r raw_input.f32] [OpenSL1.driver]\n",
+                    argv[0]);
             return 2;
         }
     }
@@ -216,6 +224,8 @@ int main(int argc, char **argv)
         ci.mInputTime.mSampleTime = next_cycle_sample - safety_in;
         ci.mOutputTime.mSampleTime = next_cycle_sample + BUF + safety_out;
         (*drv)->DoIOOperation(drv, dev, s_in, 1, kAudioServerPlugInIOOperationReadInput, BUF, &ci, in, NULL);
+        if (raw)
+            fwrite(in, sizeof(float), BUF * CH, raw);
         for (int i = 0; i < BUF; i++) {
             float v = (float)(amp * sin(phase));
             phase += 2 * M_PI * 440 / 44100;
@@ -233,6 +243,8 @@ int main(int argc, char **argv)
         cycles++;
     }
     (*drv)->StopIO(drv, dev, 1);
+    if (raw)
+        fclose(raw);
 
     double rate = last_zh > first_zh ? (last_zs - first_zs) / ((double)(last_zh - first_zh) / ticks_per_sec) : 0;
     printf("IO cycles: %u (%u frames each), zero timestamp errors: %u\n", cycles, BUF, errors);
