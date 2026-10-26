@@ -8,7 +8,9 @@ All notable changes to OpenSL1. Format inspired by [Keep a Changelog](https://ke
 
 </div>
 
-## 🛠️ Unreleased
+## 🚀 [0.1.3](https://github.com/OnSerious/OpenSL1/releases/tag/v0.1.3) – 2026-10-26
+
+**More robust: Deck 2 never replays old timecode, and every stream is watched.**
 
 - **Watchdog checks all four streams:** a dead Input 2 or Line output is now restarted too, not only Input 1.
 - **No stale timecode on Input 2:** Input 2 has its own freshness counter, so if it lags or stops it reads silence
@@ -17,6 +19,7 @@ All notable changes to OpenSL1. Format inspired by [Keep a Changelog](https://ke
   longer take the driver lock.
 - Safer stop: if USB transfers are still pending after stop, their buffers are kept instead of freed, and late
   completions are ignored. Missing NULL check when setting a stream active.
+- Test hook `OPENSL1_TEST_STALL_B=<n>` (Input 2 alone stalls) and `hal_harness -r` (raw input dump).
 
 ---
 
