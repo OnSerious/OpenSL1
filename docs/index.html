@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OpenSL1 – Unofficial Rane SL1 (Serato Scratch Live) driver for macOS</title>
+<meta name="description" content="Free, open-source, unofficial macOS driver for the Rane SL1 (Serato Scratch Live interface) on Apple Silicon. Scratch Serato CV02 timecode vinyl in Mixxx, or use the SL1 as a sound card in VirtualDJ.">
+<link rel="canonical" href="https://onserious.github.io/OpenSL1/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="OpenSL1 – Unofficial Rane SL1 driver for macOS">
+<meta property="og:description" content="Bring your Rane SL1 (Serato Scratch Live) back to life on Apple Silicon Macs – timecode vinyl in Mixxx, free and open source.">
+<meta property="og:url" content="https://onserious.github.io/OpenSL1/">
+<meta property="og:image" content="https://onserious.github.io/OpenSL1/images/mixxx-rane-sl1-sound-hardware-outputs.png">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "OpenSL1",
+  "description": "Unofficial, free and open-source CoreAudio driver for the Rane SL1 (Serato Scratch Live) interface on macOS.",
+  "applicationCategory": "MultimediaApplication",
+  "operatingSystem": "macOS 12 or later",
+  "softwareVersion": "0.1.3",
+  "license": "https://www.gnu.org/licenses/gpl-3.0.html",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "downloadUrl": "https://github.com/OnSerious/OpenSL1/releases/latest",
+  "codeRepository": "https://github.com/OnSerious/OpenSL1"
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    { "@type": "Question", "name": "Is there a Rane SL1 driver for macOS and Apple Silicon?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Yes. OpenSL1 is a free, open-source, unofficial CoreAudio driver for the Rane SL1 (Serato Scratch Live) on Apple Silicon Macs with macOS 12 or later. After installing it, the SL1 appears as the sound card “Rane SL1”." } },
+    { "@type": "Question", "name": "Does Serato Scratch Live still work on a modern Mac?",
+      "acceptedAnswer": { "@type": "Answer", "text": "No. Serato Scratch Live is legacy 32-bit Intel software and does not run on Apple Silicon, not even through Rosetta. OpenSL1 replaces the missing driver; for the DJ software use Mixxx (free) or VirtualDJ." } },
+    { "@type": "Question", "name": "Does the SL1 work with Serato DJ Lite or Pro?",
+      "acceptedAnswer": { "@type": "Answer", "text": "No. Serato DJ never supported the SL1 and does not accept it; only Serato could change that. OpenSL1 will never pretend the SL1 is a different device." } },
+    { "@type": "Question", "name": "Which timecode vinyl can I use with the SL1?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Serato CV02 (Side A, 33⅓ RPM) is tested with Mixxx. Other timecode vinyl depends on your DJ software and is untested; OpenSL1 only delivers the audio signal." } },
+    { "@type": "Question", "name": "Does the Rane SL1 work with VirtualDJ?",
+      "acceptedAnswer": { "@type": "Answer", "text": "VirtualDJ opens the SL1 as a sound card and plays to Line 1 (tested). Timecode in VirtualDJ needs a paid licence and has not been tested." } }
+  ]
+}
+</script>
+<style>
+:root {
+  --bg: #f7f7f5; --surface: #ffffff; --text: #18181b; --muted: #5b5b66; --line: #e4e4e7;
+  --accent: #e4405f; --accent-text: #ffffff; --ok: #1a7f37; --warn: #9a6700; --no: #b42318;
+  --code: #f1f1ef;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f0f12; --surface: #18181c; --text: #ececf1; --muted: #a1a1aa; --line: #2a2a31;
+    --accent: #ff5c7a; --accent-text: #111; --ok: #4ac26b; --warn: #d29922; --no: #f47067; --code: #222228;
+  }
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--text);
+  font: 16px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+a { color: var(--accent); }
+main, header, footer { max-width: 960px; margin: 0 auto; padding: 0 16px; }
+header { padding-top: 56px; padding-bottom: 32px; }
+.eyebrow { color: var(--muted); font-size: 14px; letter-spacing: .04em; text-transform: uppercase; margin: 0 0 8px; }
+h1 { font-size: clamp(28px, 5vw, 44px); line-height: 1.15; margin: 0 0 16px; }
+.lead { font-size: 19px; color: var(--muted); max-width: 720px; margin: 0 0 24px; }
+.cta { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 12px; }
+.btn { display: inline-block; padding: 12px 20px; border-radius: 10px; font-weight: 600; text-decoration: none;
+  border: 1px solid var(--line); color: var(--text); background: var(--surface); }
+.btn.primary { background: var(--accent); color: var(--accent-text); border-color: var(--accent); }
+.small { font-size: 14px; color: var(--muted); }
+section { padding: 32px 0; border-top: 1px solid var(--line); }
+h2 { font-size: 26px; margin: 0 0 16px; }
+h3 { font-size: 18px; margin: 24px 0 8px; }
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 16px; }
+.card b { display: block; margin-bottom: 4px; }
+.table-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; background: var(--surface); border: 1px solid var(--line);
+  border-radius: 12px; overflow: hidden; font-size: 15px; }
+th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { color: var(--muted); font-weight: 600; }
+tr:last-child td { border-bottom: 0; }
+.ok { color: var(--ok); font-weight: 600; } .warn { color: var(--warn); font-weight: 600; } .no { color: var(--no); font-weight: 600; }
+.note { background: var(--surface); border: 1px solid var(--line); border-left: 4px solid var(--warn);
+  border-radius: 8px; padding: 12px 16px; margin: 16px 0; }
+.note.danger { border-left-color: var(--no); }
+code { background: var(--code); padding: 2px 6px; border-radius: 6px; font-size: 14px; }
+ol li, ul li { margin-bottom: 6px; }
+figure { margin: 16px 0; }
+figure img { width: 100%; height: auto; border-radius: 10px; border: 1px solid var(--line); display: block; }
+figcaption { color: var(--muted); font-size: 14px; margin-top: 6px; }
+details { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 12px 16px; margin: 8px 0; }
+summary { cursor: pointer; font-weight: 600; }
+footer { padding-top: 24px; padding-bottom: 48px; color: var(--muted); font-size: 14px; border-top: 1px solid var(--line); }
+</style>
+</head>
+<body>
+
+<header>
+  <p class="eyebrow">Free · Open source · Unofficial</p>
+  <h1>OpenSL1 – the macOS driver for the Rane SL1 (Serato Scratch Live)</h1>
+  <p class="lead">Your Rane SL1 still works – the software behind it doesn’t. OpenSL1 makes the SL1 show up as a normal sound
+    card on Apple Silicon Macs, so you can scratch Serato CV02 timecode vinyl in <a href="https://mixxx.org">Mixxx</a> again.</p>
+  <div class="cta">
+    <a class="btn primary" href="https://github.com/OnSerious/OpenSL1/releases/latest">Download the installer</a>
+    <a class="btn" href="https://github.com/OnSerious/OpenSL1">Source code on GitHub</a>
+  </div>
+  <p class="small">macOS 12 or later · Apple Silicon (universal installer, Intel untested) · GPL-3.0-or-later ·
+    not affiliated with Rane, Serato or inMusic</p>
+</header>
+
+<main>
+
+<section id="why">
+  <h2>Why OpenSL1?</h2>
+  <p>The SL1 is the original Rane interface for <b>Serato Scratch Live</b> from 2004 – a small box with Input 1/2, Thru and
+    Line jacks for two decks. On USB it reports itself as <code>Serato Scratch LIVE(c)2004</code> (<code>13e5:0001</code>).</p>
+  <p>Serato Scratch Live is legacy 32-bit Intel software: Apple Silicon Macs cannot run it, not even through Rosetta, and
+    Serato DJ never supported the SL1. <b>You need the OpenSL1 driver</b> so macOS sees the SL1 as a sound card – the DJ
+    software on top is your choice.</p>
+</section>
+
+<section id="software">
+  <h2>Which DJ software works with the SL1 on macOS?</h2>
+  <div class="table-wrap">
+  <table>
+    <tr><th>Software</th><th>With the SL1 on macOS</th></tr>
+    <tr><td><b>Mixxx</b> (free, open source)</td><td><span class="ok">Works</span> – timecode on both decks, tested with Serato CV02 vinyl</td></tr>
+    <tr><td><b>VirtualDJ</b></td><td><span class="warn">Sound card works</span> – plays to Line 1 (tested). Timecode needs a paid VirtualDJ licence and has <b>not</b> been tested.</td></tr>
+    <tr><td><b>Serato Scratch Live</b></td><td><span class="no">No</span> – legacy 32-bit Intel software, does not run on Apple Silicon</td></tr>
+    <tr><td><b>Serato DJ Lite / Pro</b></td><td><span class="no">No</span> – does not accept the SL1; only Serato could change that</td></tr>
+  </table>
+  </div>
+  <p class="small">OpenSL1 will never present the SL1 as another device and does not circumvent any licence checks.</p>
+</section>
+
+<section id="features">
+  <h2>Features</h2>
+  <div class="grid">
+    <div class="card"><b>Plug &amp; play</b>“Rane SL1” with 4 inputs and 4 outputs at 44.1 kHz.</div>
+    <div class="card"><b>Timecode on both decks</b>Serato CV02 control vinyl in Mixxx, tested with real turntables.</div>
+    <div class="card"><b>Built for accidents</b>Cable pulled mid-set? Plug it back in – the driver delivers audio again about 0.3 s later.</div>
+    <div class="card"><b>Never loses your setup</b>“Rane SL1” stays available even when unplugged – start Mixxx first, plug in later.</div>
+    <div class="card"><b>Sleep-proof</b>Close the lid, open it again – the sound comes back.</div>
+    <div class="card"><b>Watched streams</b>A watchdog restarts USB if any input or output stops; a dead input reads silence, never old timecode.</div>
+    <div class="card"><b>Safe by design</b>No kernel extension – runs inside Apple’s sandboxed audio service.</div>
+    <div class="card"><b>Gig diagnostics</b>Levels, gaps, USB errors and power events in the macOS log.</div>
+  </div>
+</section>
+
+<section id="install">
+  <h2>Installation</h2>
+  <ol>
+    <li>Download <b>OpenSL1-0.1.3.pkg</b> from the <a href="https://github.com/OnSerious/OpenSL1/releases/latest">latest release</a>.</li>
+    <li>Open it and follow the installer.</li>
+    <li>Plug in the SL1 – it appears as <b>“Rane SL1”</b> in Audio MIDI Setup and in Mixxx.</li>
+  </ol>
+  <div class="note"><b>The installer is not “notarized”.</b> Apple has not checked it, because that requires a paid developer
+    account. macOS therefore shows a warning at first – go to <i>System Settings → Privacy &amp; Security</i> and click
+    <b>Open Anyway</b>. To remove the driver, open <b>OpenSL1-Uninstall-0.1.3.pkg</b>.</div>
+</section>
+
+<section id="mixxx">
+  <h2>Mixxx setup</h2>
+  <div class="table-wrap">
+  <table>
+    <tr><th>Where</th><th>Setting</th></tr>
+    <tr><td>macOS microphone prompt</td><td><b>Allow</b> – otherwise no timecode reaches Mixxx</td></tr>
+    <tr><td>Preferences → Sound Hardware</td><td><b>CoreAudio</b>, <b>44100 Hz</b>, buffer <b>5.8 ms</b> (2.9 ms worked on a MacBook Air M4, with less safety margin)</td></tr>
+    <tr><td>Output: Deck 1 / Deck 2</td><td>“Rane SL1” channels <b>1–2</b> / <b>3–4</b></td></tr>
+    <tr><td>Output: Main, Headphones</td><td><b>None</b> – your DJ mixer does that</td></tr>
+    <tr><td>Input: Vinyl Control 1 / 2</td><td>“Rane SL1” channels <b>1–2</b> / <b>3–4</b></td></tr>
+    <tr><td>Preferences → Vinyl Control</td><td><b>Serato CV02 Vinyl, Side A</b>, 33⅓ RPM, mode <b>REL</b>, Alpha-beta filter</td></tr>
+  </table>
+  </div>
+  <figure><img src="images/mixxx-rane-sl1-sound-hardware-outputs.png" alt="Mixxx Sound Hardware outputs: Deck 1 to Rane SL1 channels 1-2, Deck 2 to channels 3-4" loading="lazy" width="1600" height="915">
+    <figcaption>Mixxx outputs: Deck 1 → Rane SL1 channels 1–2, Deck 2 → channels 3–4.</figcaption></figure>
+  <figure><img src="images/mixxx-rane-sl1-vinyl-control-serato-cv02.png" alt="Mixxx Vinyl Control with Serato CV02 Vinyl Side A, 33.3 RPM, Alpha-Beta filter" loading="lazy" width="1600" height="1001">
+    <figcaption>Mixxx vinyl control: Serato CV02 Side A, 33⅓ RPM.</figcaption></figure>
+</section>
+
+<section id="virtualdj">
+  <h2>VirtualDJ setup</h2>
+  <div class="note"><b>Sound card: works. Timecode: not tested yet</b> – only because VirtualDJ needs a paid licence for
+    timecode/DVS. If you have one, please <a href="https://github.com/OnSerious/OpenSL1/issues">report back in an issue</a>.</div>
+  <div class="table-wrap">
+  <table>
+    <tr><th>Where</th><th>Setting</th></tr>
+    <tr><td>Settings → Audio → Outputs</td><td><b>Separate decks</b>: deck 1 → “Rane SL1” chan 1 &amp; 2, deck 2 → chan 3 &amp; 4</td></tr>
+    <tr><td>Settings → Audio → Inputs</td><td><b>Timecode signal</b>: timecode 1 → chan 1 &amp; 2, timecode 2 → chan 3 &amp; 4</td></tr>
+    <tr><td>Settings → Timecode</td><td>Mode <b>relative</b>, Record <b>Serato side A</b></td></tr>
+  </table>
+  </div>
+  <figure><img src="images/virtualdj-rane-sl1-audio-settings.png" alt="VirtualDJ Audio Settings with Rane SL1 as separate decks and timecode inputs" loading="lazy" width="1600" height="1073">
+    <figcaption>VirtualDJ audio settings with the Rane SL1.</figcaption></figure>
+</section>
+
+<section id="performance">
+  <h2>Measured performance</h2>
+  <p class="small">MacBook Air M4, macOS 27, Mixxx 2.6.0-beta, two turntables and a DJ mixer.</p>
+  <div class="table-wrap">
+  <table>
+    <tr><td>Hardware loop (USB + converters)</td><td><b>2.9 ms</b></td></tr>
+    <tr><td>Record → line out (5.8 ms buffer)</td><td><b>≈ 35 ms</b></td></tr>
+    <tr><td>15 min of timecode on both decks</td><td><b>≈ 906 000 packets per input, 0 errors</b></td></tr>
+    <tr><td>Replug during playback</td><td>audio back <b>0.3 s</b> after plugging in</td></tr>
+  </table>
+  </div>
+</section>
+
+<section id="faq">
+  <h2>FAQ</h2>
+  <details><summary>Is there a Rane SL1 driver for macOS and Apple Silicon?</summary>
+    <p>Yes – OpenSL1 is a free, open-source, unofficial CoreAudio driver for the Rane SL1 (Serato Scratch Live) on Apple
+      Silicon Macs with macOS 12 or later. The installer is universal, so Intel should work too, but that is untested.</p></details>
+  <details><summary>Does Serato Scratch Live still work on a modern Mac?</summary>
+    <p>No. It is legacy 32-bit Intel software and does not run on Apple Silicon, not even through Rosetta. OpenSL1 replaces
+      the missing driver; for the DJ software use Mixxx (free) or VirtualDJ.</p></details>
+  <details><summary>Does the SL1 work with Serato DJ Lite or Pro?</summary>
+    <p>No. Serato DJ never supported the SL1 and does not accept it – only Serato could change that. OpenSL1 will never
+      pretend the SL1 is a different device.</p></details>
+  <details><summary>Which timecode vinyl can I use?</summary>
+    <p>Serato CV02 (Side A, 33⅓ RPM) is tested with Mixxx. VirtualDJ has its own control vinyl and, according to community
+      reports, also reads Serato CV02 – unverified here. OpenSL1 only delivers the audio signal; decoding the timecode is up
+      to your DJ software.</p></details>
+  <details><summary>Sound drops when I plug the Mac’s charger in or out</summary>
+    <p>The SL1 is powered over USB and can drop off when the Mac switches between charger and battery; occasionally it stays
+      away until you replug it. Plug the charger in before the set and leave it alone.</p></details>
+  <details><summary>Is it safe?</summary>
+    <p>OpenSL1 is a user-space audio plug-in, not a kernel extension. It runs inside macOS’s sandboxed audio service with
+      access to the SL1 only – no files, no network. The full source is on GitHub.</p></details>
+</section>
+
+<section id="disclaimer">
+  <h2>Disclaimer</h2>
+  <div class="note danger"><b>Unofficial – use at your own risk.</b> OpenSL1 is an independent hobby project, provided
+    “as is” without warranty of any kind. To the extent permitted by law, the author accepts no liability for damage of any
+    kind. It is not made, endorsed or supported by Rane, Serato or inMusic and contains no code from them. Test your setup
+    well before a gig.</div>
+  <p class="small">Rane, SL1, Serato and Scratch Live are trademarks of their respective owners and are used here only to
+    name the hardware and software this driver works with.</p>
+</section>
+
+</main>
+
+<footer>
+  <p>OpenSL1 · GPL-3.0-or-later · <a href="https://github.com/OnSerious/OpenSL1">GitHub</a> ·
+    <a href="https://github.com/OnSerious/OpenSL1/blob/main/CHANGELOG.md">Changelog</a> ·
+    <a href="https://ko-fi.com/OnSerious">Support on Ko-fi</a> (voluntary)</p>
+</footer>
+
+</body>
+</html>

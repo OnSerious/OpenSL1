@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://onserious.github.io/OpenSL1/sitemap.xml
