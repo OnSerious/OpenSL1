@@ -24,7 +24,7 @@ All notable changes to OpenSL1. Format inspired by [Keep a Changelog](https://ke
 
 ---
 
-## 🚀 [0.1.1](https://github.com/OnSerious/OpenSL1/releases/tag/v0.1.1) – 2026-10-25
+## 🚀 0.1.1 – 2026-10-25
 
 **Mixxx never loses the SL1 any more.**
 
@@ -53,7 +53,7 @@ All notable changes to OpenSL1. Format inspired by [Keep a Changelog](https://ke
 
 ---
 
-## 🚀 [0.1.0](https://github.com/OnSerious/OpenSL1/releases/tag/v0.1.0) – 2026-10-25
+## 🚀 0.1.0 – 2026-10-25
 
 **First public release: the Rane SL1 is back on macOS.** Tested with Serato CV02 timecode on both decks in Mixxx,
 sleep/wake, unplug/re-plug and charger changes during playback.
